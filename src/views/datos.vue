@@ -66,17 +66,23 @@
 
 
 <div v-show="EsVisible_2136">
-
+  
   <!-- ////////////////////////////////////  --> 
   <!-- ////////////////////////////////////  --> 
   
   <!-- Componente que busca medicmanentos de AlfABeta  -->    
   <BuscarMed />
   <!-- Componente que Lista medicmanentos de la CLinica  -->  
-  <!--Listado de Grillas-->
+  <!--Listado de Grillas
+  <grilla :ref="'grillaComponent-' + formulario.idConfigForm" :idConfig="formulario.metodo" />
+  -->
+  <button @click="mp(dagrilla[0].idConfigForm)">referencia</button>
   <div v-for="formulario of dagrilla" :key="formulario.idConfigForm">
-      <grilla :ref="grillaComponent"  :idConfig="formulario.metodo" /> 
+      <grilla :ref="'grillaComponent' + formulario.idConfigForm" :idConfig="formulario.metodo" />
 </div>
+<v-btn prepend-icon="mdi-note-multiple "  class="bg-primary" block title="Grabar Datos" @click="mp()" v-if="$store.state.permisos.includes(10)">
+                Verifica
+              </v-btn>
  <!--Listado de Botones-->
  <div v-for="formulariobot of dabotones" :key="formulariobot.idConfigForm">
   <v-btn 
@@ -949,8 +955,19 @@ export default {
                        this.mostrarAlertaSuceso = false;
                    }, 3000);
         },
-        mp() {
-            alert("Ingreso al boton");
+        mp(idConfigForm) {
+          //const idConfigForm = 1;
+          this.$nextTick(() => {
+        const refName = 'grillaComponent' + idConfigForm;
+        alert(refName);
+        const grillaComponent = this.$refs[refName];
+        
+        if (grillaComponent && typeof grillaComponent.fetchArticulosMed === 'function') {
+          grillaComponent.fetchArticulosMed();
+        } else {
+          console.error('La referencia al componente Grilla es nula o el método fetchArticulosMed no está definido');
+        }
+      });
         },
         MostrarNombresFormulario123(){
            
@@ -1187,15 +1204,14 @@ if (respuesta) {
             //this.fetchArticulos();
             //this.$refs.grillaComponent.fetchArticulosMed();
             //this.$refs.grilla.fetchArticulosMed();
-            const refName = 'grillaComponent-' + idConfigForm;
-            //alert(refName);
-            const grillaComponent = this.$refs[refName];
-            //alert(grillaComponent);
-            if (grillaComponent && grillaComponent.fetchArticulosMed) {
-              grillaComponent.fetchArticulosMed();
-            } else {
-              console.error('La referencia al componente Grilla es nula o el método fetchArticulosMed no está definido');
-            }
+            const grillaComponent = this.$refs.grillaComponent;
+            
+      
+      if (grillaComponent && typeof grillaComponent.fetchArticulosMed === 'function') {
+        grillaComponent.fetchArticulosMed();
+      } else {
+        console.error('La referencia al componente Grilla es nula o el método fetchArticulosMed no está definido');
+      }
             setTimeout(() => {
                      this.mostrarAlertaSuceso = false;
                   }, 5000);
