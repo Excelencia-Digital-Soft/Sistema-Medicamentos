@@ -76,32 +76,26 @@
   <!--Listado de Grillas
   <grilla :ref="'grillaComponent-' + formulario.idConfigForm" :idConfig="formulario.metodo" />
   -->
-  <button @click="mp(dagrilla[0].idConfigForm)">referencia</button>
+
   <div v-for="formulario of dagrilla" :key="formulario.idConfigForm">
       <grilla :ref="'grillaComponent' + formulario.idConfigForm" :idConfig="formulario.metodo" />
 </div>
-<v-btn prepend-icon="mdi-note-multiple "  class="bg-primary" block title="Grabar Datos" @click="mp()" v-if="$store.state.permisos.includes(10)">
-                Verifica
-              </v-btn>
+
  <!--Listado de Botones-->
+ <v-row>
  <div v-for="formulariobot of dabotones" :key="formulariobot.idConfigForm">
-  <v-btn 
-    prepend-icon="mdi-note-multiple" 
-    class="bg-primary" 
-    block 
-    title="Grabar Datos" 
-    @click="() => {
-        if (typeof formulariobot.metodo === 'function') {
-          console.table(formulariobot);
-          formulariobot.metodo();
-        } else {
-          console.error(formulariobot.metodo);
-        }
-      }" 
-    v-if="$store.state.permisos.includes(10)">
-    {{ formulariobot.texto }}
-  </v-btn>
-</div>
+  <v-col cols="auto" class="col-3">
+    <v-btn 
+        prepend-icon="mdi-note-multiple" 
+        class="bg-primary" 
+        block 
+        title="Grabar Datos" 
+        >
+        {{ formulariobot.texto }}
+    </v-btn>
+  </v-col>
+ </div>
+</v-row>
   
   <!-- <grilla ref="listarMed"  :idConfig="42" />  -->
    <!-- ////////////////////////////////////  --> 
@@ -475,7 +469,7 @@ export default {
       //this.MostrarComboIII();
       //this.ComboTipoMedicamento();
       this.fetch_grilla();
-      //this.fetch_botones();
+      this.fetch_botones();
       
     },
     watch: {

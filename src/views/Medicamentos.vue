@@ -1,11 +1,29 @@
 <template >
   
     <barra-navegacion></barra-navegacion>
+ <div  class="shadow p-3  bg-light text-sm " align-center style="max-width: 1300px; " >
+  <v-alert
+          shaped
+        color="#006699"
+        theme="dark"
+        icon="mdi-domain"
+        density="compact"
+        elevation="4"
+        border="top"
+      >
+       <b> Articulos</b><br>
+  
+       Carga de articulos asoxiados a AlfaBeta
+      </v-alert>
+ </div>
+
+
+
+    <!-- codigo anterios -->
+
       <spinner :visible="MostrarSpinner"></spinner>
       <div v-if="!MostrarSpinner">
-          
-          
-          <div >
+         <div >
           
           <!--Titulo del Formulario-->
          
