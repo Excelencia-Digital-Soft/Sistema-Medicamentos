@@ -11,91 +11,48 @@
           <!--CONTENDOR PRINCIPAL    -->
 <!--  COmponenete que muestra los campos de cada fomrulario   -->
 <EditarFilaModalN />
-    <!--   
-<div id="ContenedorDeCampos" > 
-      <div class="form-group bg-white "  >
-        
-      <div  class="shadow p-3 mb-5  rounded table-container text-sm" style="color:#000000; max-width: 1400px; margin-bottom: 1%; margin-top: 1%" >
-  
-        <div class="row">
-        <div v-for="campos of dafield" :key="campos.id_Field" :class="campos.posi">
-           <label class="badge bg-secondary" :for="campos.nombre">{{ campos.etiqueta }}</label>
-          Si el tipo es "select", renderiza un select 
-          
-          <select :v-model="campos.nombre" v-if="campos.tipo === 'select'"   :class="campos.clase"
-      :required="campos.requerido" :identificador="campos.id_Field">
-      <option value="">Seleccione {{campos.nombre}} </option>
-      <option v-for="Combo in this[campos.opciones.trim()]" :value="Combo.codigo">{{Combo.nombre}}</option>
-    </select> 
-         
-        
-          <textarea v-else-if="campos.tipo === 'textarea'"
-          :name="campos.nombre"
-          :class="campos.clase"
-          :required="campos.requerido"
-          :identificador="campos.id_Field">
-          </textarea>
-         
-          <input type="checkbox" v-else-if="campos.tipo === 'checkbox'" 
-          :name="campos.nombre"
-          :class="form-check"
-          :required="campos.requerido"
-          :identificador="campos.id_Field">
-        
-          <v-text-field 
-          v-else :type="campos.tipo" 
-          :placeholder="campos.marcador" 
-          :v-model="campos.nombre" 
-          :name="campos.nombre"
-          @keydown.enter="this[campos.opciones] && this[campos.opciones]($event)"   
-          :required="campos.requerido" 
-          :identificador="campos.id_Field"
-          variant="underlined" block clearable autocomplete="off"
-          >
-      </v-text-field>
-      
+   
+
+
+<br>
+<div class="row shadow p-3"   style=" max-width: 1300px; "  >
+      <div class="col-6">
+          <alerta-suceso  :visible = "mostrarAlertaSuceso" :mensaje = "mensajeAlertaSuceso"/>
+         </div>
+      <div class="col-6">
+        <!--    VerGrabar
+        <div v-show="NoVisible_2136">  
+        <v-btn style="background-color:white;" prepend-icon="mdi-note-multiple"  block title="Grabar Datos" @click="obtenerValores" v-if="$store.state.permisos.includes(10)">
+          Guardar 24</v-btn>
+        </div>r-->
+        <!--Listado de Botones-->
+   
+        <v-row>
+        <div v-for="formulariobot of dabotones" :key="formulariobot.idConfigForm">
+        <v-col cols="auto" class="col-3">
+        <v-btn 
+        :prepend-icon="formulariobot.icono"  
+        block title="Grabar Datos" 
+        :color="formulariobot.color"
+        @click="handleClick(formulariobot.metodo)"
+        v-if="$store.state.permisos.includes(10)">
+        {{ formulariobot.texto }} 
+        </v-btn>
+        </v-col>
         </div>
-      </div>
+        </v-row>
     </div>
-   
-   
-  </div>
-    </div>
-  -->
+</div>
+<br>aca
 <!-- Codigo propio de cada formulario -->
-
-
 <div v-show="EsVisible_2136">
-
-<!-- ////////////////////////////////////  --> 
-<!-- ////////////////////////////////////  --> 
-
-<!-- Componente que busca medicmanentos de AlfABeta  -->    
-<BuscarMed />
-<!-- Componente que Lista medicmanentos de la CLinica  -->  
-<!--Listado de Grillas-->
-<div v-for="formulario of dagrilla" :key="formulario.idConfigForm">
-    <grilla :ref="'grillaComponent' + formulario.idConfigForm"  :idConfig="formulario.metodo" /> 
-</div>
-<!--Listado de Grillas-->
-<v-row>
-<div v-for="formulariobot of dabotones" :key="formulariobot.idConfigForm">
-<v-col cols="auto" class="col-3">
-<v-btn 
-:prepend-icon="formulariobot.icono"  
- block title="Grabar Datos" 
-:color="formulariobot.color"
-@click="handleClick(formulariobot.metodo)"
- v-if="$store.state.permisos.includes(10)">
-  {{ formulariobot.texto }} 
- </v-btn>
- </v-col>
-</div>
-</v-row>
-
-<!-- <grilla ref="listarMed"  :idConfig="42" />  -->
- <!-- ////////////////////////////////////  --> 
- <!-- ////////////////////////////////////
+  <!-- Componente que busca medicmanentos de AlfABeta  -->    
+  <BuscarMed />
+  <!-- Componente que Lista medicmanentos de la CLinica  -->  
+  <!--Listado de Grillas-->
+  
+  <!-- <grilla ref="listarMed"  :idConfig="42" />  -->
+  <!-- ////////////////////////////////////
 
     <div class="row" >
           <div class="col  p-3  "></div>
@@ -107,20 +64,10 @@
           <div class="col  p-3  "></div>
     </div>        
 --> 
+ </div>
 
-  </div>
 <!-- FIN Codigo propio de cada formulario -->
-      <div class="row shadow p-3"   style=" max-width: 1300px; "  >
-      <div class="col-9">
-          <alerta-suceso  :visible = "mostrarAlertaSuceso" :mensaje = "mensajeAlertaSuceso"/>
-         </div>
-      <div class="col-3">
-        <!--    VerGrabar-->
-        <div v-show="NoVisible_2136">  
-        <v-btn style="background-color:white;" prepend-icon="mdi-note-multiple"  block title="Grabar Datos" @click="obtenerValores" v-if="$store.state.permisos.includes(10)">
-          Guardar 24</v-btn></div>
-      </div>
-    </div>
+
  <!--
   </form>
   -->
@@ -146,7 +93,7 @@
           <div>
               <div class="row">
                   <div class="col  p-3 text-center ">    
-              <v-btn @click="metodograbar()" prepend-icon="mdi-cloud-upload" color="#FFFFFF"  >Confirma Grabar</v-btn>
+              <v-btn @click="Grabar()" prepend-icon="mdi-cloud-upload" color="#FFFFFF"  >Confirma Grabar</v-btn>
         </div>
         <div class="col  p-3 text-center ">
         <v-btn  prepend-icon="mdi-cancel" color="#FF0000" @click="cerrarGrabar">   <v-spacer></v-spacer> Cancelar</v-btn>
@@ -194,6 +141,11 @@
   </v-dialog>
 
  <br>
+ <!-- aca grilla dinamica-->
+
+ <div v-for="formulario of dagrilla" :key="formulario.idConfigForm">
+    <grilla :ref="'grillaComponent' + formulario.idConfigForm"  :idConfig="formulario.metodo" /> 
+  </div>
  <div v-show="NoVisible_2136">    
   <v-chip class="d-flex  darken-1 sm"  color="#000000" elevation="1"   >   
      <b>   Listado de Datos</b> 
@@ -1110,7 +1062,63 @@ alert('El usuario hizo clic en "Aceptar"');
     // Configura el observer para observar cambios en el cuerpo del documento
     observer.observe(document.body, { childList: true, subtree: true });
   },
-
+  async Grabar() {
+        
+     
+        // Obtén una referencia al contenedor de campos dinámicos
+        var contenedor = document.getElementById("ContenedorDeCampos");
+        // Encuentra todos los elementos de formulario dentro del contenedor
+        var campos = contenedor.querySelectorAll("input[type='text'], textarea, input[type='number'], select, input[type='password'], input[type='date'], input[type='time'], input[type='email'], input[type='checkbox']");
+        // Crea un objeto para almacenar los valores
+        var valores = [];
+        //recuperar valor del idConfigForm
+        var idConfigForm = this.$route.params.idConfigForm;
+        // Recorre los campos y obtén sus valores
+        campos.forEach(function (campo) {
+        valores.push({
+        id_ConfigForm: idConfigForm,  // Puedes ajustar este valor según tus necesidades
+        Campo: campo.getAttribute("v-model"),  // Utiliza getAttribute para obtener el valor de key
+        valor: campo.value,
+        tipo: campo.getAttribute("type"),
+        });    
+        
+        });
+      
+        var variable = "";
+        var variable_valor = "";
+        var valor_sql = "";
+        var v = "";
+        for (var i = 0; i < valores.length; i++) {
+          variable = variable +","+ valores[i].Campo;
+          if(valores[i].tipo == "text")
+            v = "'"+ valores[i].valor.replace(",", ".") +"'";
+        else
+        {
+        v = valores[i].valor;
+        v= v.replace(",", ".");
+        }
+          variable_valor = variable_valor+","+v;
+          
+        }
+        console.log(idConfigForm);
+        //console.log(variable.slice(1));
+        //console.log(variable_valor.slice(1));
+        var pvariable = variable + ", usuario";
+        var pvariable_valor = variable_valor + ","+this.idUsuario;
+        console.log(pvariable.slice(1));
+        console.log(pvariable_valor.slice(1));  
+            await this.axios.post(`api/ConfigForm/AgregarTablas/${idConfigForm}/${pvariable.slice(1)}/${pvariable_valor.slice(1)}`)
+            
+            .then(datos => {
+              this.mostrarAlertaEliminar = false;
+              this.mensajeAlertaSuceso = "Grabaron Correctamente los datos";
+              this.mostrarAlertaSuceso = true;
+              this.VentanaGrabar = false;
+             setTimeout(() => {
+                     this.mostrarAlertaSuceso = false;
+                  }, 5000);
+            });
+        },
   async GrabarMedicamento() {
  
     ///////-------------------------------

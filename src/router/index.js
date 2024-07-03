@@ -15,6 +15,7 @@ import HomeViewpTipoIIIIIIIII from '../views/add.vue'
 import HomeViewpTipoIIIIIIIIII from '../views/ListarField.vue'
 import HomeViewpTipoIIIIIIIIIII from '../views/Medicamentos.vue'
 import HomeViewpTipoIIIIIIIIIIII from '../views/datos.vue'
+import HomeViewpTipoIIIIIIIIIIIII from '../views/principal.vue'
 
 
 
@@ -166,6 +167,13 @@ const routes = [{
         path: '/datos/:idConfigForm',
         name: 'datos',
         component: HomeViewpTipoIIIIIIIIIIII,
+            meta: { requiresAuth: true },
+            
+    },
+    {
+        path: '/principal/:idConfigForm',
+        name: 'principal',
+        component: HomeViewpTipoIIIIIIIIIIIII,
             meta: { requiresAuth: true },
             
     },
