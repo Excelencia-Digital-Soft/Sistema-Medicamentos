@@ -43,7 +43,7 @@
         </v-row>
     </div>
 </div>
-<br>aca
+<br>
 <!-- Codigo propio de cada formulario -->
 <div v-show="EsVisible_2136">
   <!-- Componente que busca medicmanentos de AlfABeta  -->    
@@ -147,69 +147,7 @@
     <grilla :ref="'grillaComponent' + formulario.idConfigForm"  :idConfig="formulario.metodo" /> 
   </div>
  <div v-show="NoVisible_2136">    
-  <v-chip class="d-flex  darken-1 sm"  color="#000000" elevation="1"   >   
-     <b>   Listado de Datos</b> 
-</v-chip>
-  
-      <!--<div class="shadow p-3 mb-5 bg-white rounded table-container text-sm" v-if="$store.state.permisos.includes(11) & !NoHayRegistros"> -->   
-      <!-- E,pieza Primra Tabla -->
-      <div class="shadow p-3 mb-5 bg-light rounded  text-sm"   >
-          <div class="row bg-white" >
-            <div class="col  p-3 text-center ">
-              
-              </div>
-              <div class="col  p-3 text-center ">
-               <v-text-field v-model="buscaruno" label="Buscador..." append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
-              </div>
-              <div class="col  p-3 text-center ">
-                  <v-btn @click="buscador" prepend-icon="mdi-magnify" color="#FFFFFF" >Buscar</v-btn>
-              </div>
-        </div>
-        
-        <!-- <table class="table table-hover dataTable no-footer" id="m24" role="grid" aria-describedby="m24_info" ref="table">
-          <table class="table table-hover bg-white " id="m24"  >-->
-            <table class="table  table-hover "   id="m24"  >
-              <thead>
-                  <tr>
-                      <th>Identificador</th>
-                      <th scope="col" v-for="Encabezados of dataHeaders">{{ Encabezados }}</th>
-                      <th scope="col"> Acciones </th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="Datos in dataValues">
-                      <td> {{ Datos[0] }}</td>
-                      <td scope="col" v-for="valor in Datos.slice(1)">{{ valor.value }}</td>
-                      <td class="nowrap">
-                          <div class="row">
-                              <div class="col-auto"> 
-                                  <v-btn class="btn btn-primary mx-1 btn-sm" title="Editar" @click="mostrardialogEdicion(Datos)" v-if="$store.state.permisos.includes(10)">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                          class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                          <path
-                                              d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
-                                      </svg>
-                                  </v-btn>
-                              </div>
-                              <div class="col-auto">
-                                  <v-btn class="btn btn-danger mx-1 btn-sm" title="Eliminar"
-                                      @click="mostrarConfirmacionEliminar(Datos[0])" v-if="$store.state.permisos.includes(12)">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                          class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                          <path
-                                              d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                      </svg>
-                                  </v-btn>
-                              </div>
-                          </div>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
-      
-      </div> 
-      <!-- Termina Primra Tabla -->
-    </div>
+ </div>
       
       <!-- Alerta de confirmación personalizada -->
       <div v-if="mostrarAlertaEliminar" class="alert  d-flex align-items-center" role="alert">
@@ -400,7 +338,7 @@ export default {
     //}
     //if(idFormulario == 2134){
       //this.EsVisible_2134 = true;
-       this.fetch();
+       //this.fetch();
       
     //}
     
@@ -1090,7 +1028,7 @@ alert('El usuario hizo clic en "Aceptar"');
         var v = "";
         for (var i = 0; i < valores.length; i++) {
           variable = variable +","+ valores[i].Campo;
-          if(valores[i].tipo == "text")
+          if((valores[i].tipo == "text")|| (valores[i].tipo == "date"))
             v = "'"+ valores[i].valor.replace(",", ".") +"'";
         else
         {
