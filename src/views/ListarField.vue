@@ -1,6 +1,7 @@
 <template >
   
     <barra-navegacion></barra-navegacion>
+  
       <spinner :visible="MostrarSpinner"></spinner>
       <div v-if="!MostrarSpinner">
           
@@ -624,7 +625,6 @@
       ],
       selectedItemPosi: null,
       optionsPosi: [
-        'col-sm-2',
         'col-sm-3',
         'col-sm-4',
         'col-sm-5',

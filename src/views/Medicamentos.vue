@@ -1,224 +1,222 @@
-<template >
-  
-    <barra-navegacion></barra-navegacion>
- <div  class="shadow p-3  bg-light text-sm " align-center style="max-width: 1300px; " >
+<template class=" text-center">
+  <barra-navegacion></barra-navegacion>
+
+  <v-card  class="px-4 py-2  text-center w-100 bg-light" elevation="3"  style="max-width: 1350px; ">
+    
+<div  class="shadow p-3  bg-light text-sm text-left" align-center style="max-width: 1350px; " >
   <v-alert
           shaped
-        color="#006699"
+        color="#F5F5F5"
         theme="dark"
         icon="mdi-domain"
         density="compact"
         elevation="4"
         border="top"
       >
-       <b> Articulos</b><br>
+       <b> Articulos:  </b> 
   
-       Carga de articulos asoxiados a AlfaBeta
+       Carga de articulos asociados a AlfaBeta
       </v-alert>
+      <br>
+      <!-- ingreso de datos -->
+<div class="row bg-white" >
+  <div class="col-1" >
+  <v-text-field v-model="nroarticulo" label="Identificador"  variant="underlined" size="small" ></v-text-field>
+</div>
+  <div class="col-1" >
+  <v-text-field v-model="codigo" label="codigo" variant="underlined" size="small" ></v-text-field>
+</div>
+
+<div class="col-5" >
+  <v-text-field  name="Nombre" v-model="Nombre" label="Nombre" variant="underlined" size="small" ></v-text-field>
+</div>
+
+<div class="col-1" >
+  <v-text-field v-model="NroRegistro" label="NroRegistro" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-1" >
+  <v-text-field v-model="troquel" label="troquel" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-2" >
+  <v-text-field v-model="barra" label="barra" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-1" >
+  <v-text-field v-model="Precio" label="Precio" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-3 text-left" >
+      Selecciona un sector
+      <select v-model="ValorCombo" class="form-select" id="Combo" >
+        <option value="0">Seleccionar un sector...</option> 
+        <option v-for="Combo in ListaCombos" :key="Combo.codigo"  :value="Combo.codigo">{{Combo.codigo}} -- {{Combo.nombre}}</option>
+      </select>  
+       
+</div>
+<div class="col-3 text-left" >
+      Selecciona un Tipo de Medicamento
+      <select v-model="ValorComboTipo" class="form-select" id="Combo" >
+        <option value="0">Seleccionar un Tipo de Medicamento...</option> 
+        <option v-for="Combo in ListaCombosTipo" :key="Combo.codigo"  :value="Combo.codigo">{{Combo.codigo}} -- {{Combo.nombre}}</option>
+      </select>  
+       
+</div>
+<div class="col-2" >
+  <v-text-field v-model="stockminimo" label="stockminimo" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-2" >
+  <v-text-field v-model="stockmedio" label="stockmedio" variant="underlined" size="small" ></v-text-field>
+</div>
+<div class="col-2" >
+  <v-text-field v-model="stockmaximo" label="stockmaximo" variant="underlined" size="small" ></v-text-field>
+</div>
+
+</div>
+<!-- COMPONENTE Busca en AlfaBeta --> 
+
+
+
+
+ <v-chip class="d-flex  darken-1 sm"  color="#000000" elevation="1"   >
+ <b> Buscador de Medicamentos en AlfaBeta</b>
+</v-chip>
+
+<div class="content" >  
+       <div class="row shadow p-3 bg-white" >
+              <div class="col-9 text-center " >
+                
+                <v-text-field  v-model="buscar" label="Busqueda por nombre de medicamento de AlfaBeta" variant="underlined" block></v-text-field>
+              </div>
+              <div class="col-3 text-center "> 
+                <v-btn @click="BuscarMedicamento()" class="bg-primary" p prepend-icon="mdi-cloud-upload" block>Buscar en AlfaBeta</v-btn> 
+              </div>
+              
+            </div>
+</div>
+<div >
+    <div class="content" ref="scrollContainer">
+      <div class="row mt-5  shadow p-3">
+        <div class="col-md-4 shadow p-3" v-for="item in ListaFormulariosMed" v-bind:key="item.nroRegistro"> 
+          <div class="card mb-4 bg-primary shadow p-3">
+            <div class="card-body"><v-icon start icon="mdi-arrow-right" ></v-icon>
+              {{ item.nombre }} -  {{ item.presentacion }}   <br>
+              Cdo. Barra: {{ item.codBarras }}   - Troquel:  {{ item.troquel }}  
+                <div class="row" >
+                  <div class="col-6 text-left "><strong>$</strong> {{ item.precio }} </div>
+                  <div class="col-6 text-center ">
+                  <v-btn class="bg-primary" fab  @click="Mostrar(  item.nombre, item.precio, item.nroRegistro, item.presentacion,item.codBarras,item.troquel)"  prepend-icon="mdi-open-in-new">Seleccionar</v-btn>
+                  </div>
+            </div>        
+         </div>
+         </div>
+       </div>
+
+</div>
+</div>
+
+</div>
+<div class="row shadow p-3 bg-white" >
+<div class="row bg-white" >
+<div class="col-2" ></diV>
+  <div class="col-3" >
+ <v-btn @click="VerGrabar()" color="primary" p prepend-icon="mdi-cloud-upload" block>Grabar</v-btn> 
  </div>
+ <div class="col-3" >
+ <v-btn @click="Limpiar()" color="primary" p prepend-icon="mdi-cloud-upload" block>Limpiar</v-btn> 
+ </div>
+ <div class="col-3">
+  <v-btn @click="mostrarConfirmacionEliminar()" color="#FF0000" p prepend-icon="mdi-cloud-upload" block>Eliminar</v-btn> 
+</div>
+</div>
+</div>
+<br>
+<!-- COMPONENTE Listado de Medicamentos 
+<ListarMed />
+--> 
+<v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
+   <b>Listado de Articulos  </b> 
 
-
-
-    <!-- codigo anterios -->
-
-      <spinner :visible="MostrarSpinner"></spinner>
-      <div v-if="!MostrarSpinner">
-         <div >
-          
-          <!--Titulo del Formulario-->
-         
-          
-      <div class="container-sm">
-        <v-alert
-          shaped
-        color="#006699"
-        theme="dark"
-        icon="mdi-domain"
-        density="compact"
-        elevation="4"
-        border="top"
-      >
-       <b> Medicamentos</b><br>
-  
-       Carga de datos de medicamentos
-      </v-alert>
-      
-      <div class="shadow p-3 mb-2 bg-white rounded table-container text-sm container-sm" v-if="$store.state.permisos.includes(11) & !NoHayRegistros">
-          <!-- Tabla del Formulario -->
-           <div class="row" >
+</v-chip>
+<div class="row bg-white" >
               <div class="col  p-3 text-center ">
-                <v-btn @click="nuevo" prepend-icon="mdi-cloud-upload" color="#1E88E5" >Nuevo</v-btn>
+               
                 </div>
                 <div class="col  p-3 text-center ">
                  
                 </div>
                 <div class="col  p-3 text-center ">
-                  <v-text-field v-model="buscar" label="Buscador por nombre de medicamento" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
+                    <v-text-field v-model="searchQuery" label="Buscador" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
                 </div>
-          </div>  
-        </div>     
-  
+          </div>
+      
+      <table class="table table-bordered table-hover bg-white text-left">
+        <thead>
+          <tr>
+            <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in paginatedRows" :key="rowIndex">
+            <td v-for="(header, colIndex) in headers" :key="colIndex">{{ row[header] }}</td>
+            <td>
+            <v-btn @click="sendRowData(row)" class="bg-primary" >Ver</v-btn>
+          </td>
+          </tr>
           
-       <table :value="customers" class="table justify-center bg-blue darken-1 "  color="#006699"  >
-          <thead>
-            <tr>
-              <th ><v-chip class="justify-center primary">Identificador</v-chip></th>
-              <th ><v-chip class="justify-center primary">troquel</v-chip></th>
-              <th ><v-chip class="justify-center primary">CodBarras</v-chip></th>
-              <th ><v-chip class="justify-center primary">nombre</v-chip></th>
-              <th ><v-chip class="justify-center primary">precio</v-chip></th>
-              <th  ><v-chip class="justify-center primary">Ver Datos</v-chip></th>
-            </tr>
-          </thead>
-          <tbody v-for="Listaform of ListaFormularios" :key="Listaform.nroRegistro">
-            <tr>
-              <td class="bg-white " >
-                 <v-icon start icon="mdi-arrow-right" ></v-icon>  {{ Listaform.idArticulo }}
-            </td>
-              <td class="bg-white " >
-                 {{ Listaform.troquel }}
-            </td>
-              <td class="bg-white ">{{ Listaform.barra }}</td>
-              
-              <td  class="bg-white ">
-                <v-chip class="justify-center bg-blue darken-1 sm"  color="#FFFFFF" elevation="4"   >
-                    <b> {{ Listaform.nombre }}</b>
-                </v-chip>    
-            </td>
-             
-              <td  class="bg-white ">{{ Listaform.precio_Venta }}</td>
-              <td class="nowrap bg-white " >
-                <div class="row">
-                  <div class="col-auto">
-                     <v-btn @click="editar(Listaform)" color="#1E88E5" prepend-icon="mdi-open-in-new" class="sm"></v-btn>
-                  </div>
-                
-                </div>
-              </td>
-            </tr>
-         
-         
-          </tbody>
-       
+        </tbody>
+      </table>
+      
+      <div class="pagination">
+        <v-btn @click="prevPage" :disabled="currentPage === 1" class="bg-primary">Anterior</v-btn>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <v-btn @click="nextPage" :disabled="currentPage === totalPages" class="bg-primary">Siguiente</v-btn>
+      </div>
+      
+    </div>
+ 
+
+
+
+
+ 
+
+    <!-- codigo anterios -->
+
+
+
+      <spinner :visible="MostrarSpinner"></spinner>
+      <div v-if="!MostrarSpinner">
           
-        </table>  
-        </div>  
+          
+          <div >
+          
+          <!--Titulo del Formulario-->
+         
+          
+   
       </div>    
           
-            <!-- <datatables :data="ListaFormularios" class="table" style="width:80%">
-              <thead>
-            <tr>
-              <th >ID</th>
-              <th >Titulo del formulario</th>
-              <th >Descripcion</th>
-              <th  >Acciones</th>
-            </tr>
-          </thead>
-            </datatables> --> 
-            <!-- Iconos
-            https://vuetifyjs.com/en/components/icons/#semantic-svg-icons
+      
+          
   
-            <v-icon icon="mdi-home" />
-            <v-icon icon="mdi-arrow-left" />
-            <v-icon icon="mdi-arrow-right" />
-            <v-icon icon="mmdi-wrench" />
-            <v-icon icon="mdi-thumb-up" />
-            <v-icon icon="mdi-minus-circle" />
-            <v-icon end icon="mdi-cancel"></v-icon>
-            <v-icon end icon="mdi-checkbox-marked-circle"></v-icon>
-            <v-icon size="large" color="green-darken-2" icon="mdi-domain" ></v-icon>
-            <v-icon size="large" color="orange-darken-2" icon="mdi-arrow-up-bold-box-outline" ></v-icon>
-            
-            -->
-  
-           <p></p> <p></p>    
+             
            <v-dialog
             v-model="dialog"
             persistent
             
              fullscreen
              
-            >    
+            >   
+          </v-dialog> 
             <v-card>
-              <v-card elevation="4" color="#006699">
-       
-      
-       <b><br> -  {{ formTitle }}<br><br></b>
-      </v-card>
-      <br><br><br>  
-      <v-form fast-fail @submit.prevent>
-            <div class="container-sm" >
-            <div class="row" >
-              <div class="col  p-3 text-center ">
-                <v-text-field  v-model="idArticulo" label="Ingresar idArticulo" variant="underlined"></v-text-field>
-               </div>
-              <div class="col  p-3 text-center">
-                <v-text-field v-model="nombre" label="Ingresar nombre" variant="underlined"></v-text-field>
-              </div>
-              <div class="col  p-3 text-center">
-                <v-text-field v-model="codigo" label="Ingresar codigo" variant="underlined"></v-text-field>
-              </div>
-              
-        </div>
-        <div class="row" >
-              <div class="col  p-3 text-center ">
-                <v-text-field  v-model="troquel" label="Ingresar troquel" variant="underlined"></v-text-field>
-               </div>
-              <div class="col  p-3 text-center">
-                <v-text-field v-model="barra" label="Ingresar barra" variant="underlined"></v-text-field>
-              </div>
-              <div class="col  p-3 text-center">
-                <select v-model="ValorCombo" class="form-select" id="Combo" >
-                  <option v-for="Combo in ListaCombos" :value="Combo">{{Combo.nombre}}</option>
-                </select>
-              </div>
-              
-        </div>
-        <div class="row" >
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="tipo_Articulo" label="Ingresar tipo_Articulo" variant="underlined"></v-text-field> 
-              
-          </div>
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="precio_Venta" label="Ingresar precio_Venta" variant="underlined"></v-text-field>  
-              
-          </div>
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="precio_Costo" :rules="lengthRules" label="Ingresar precio_Costo" variant="underlined"></v-text-field>  
-            
-          </div>
-        </div>
-        <div class="row" >
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="stock_Maximo" label="Ingresar stock_Maximo" variant="underlined"></v-text-field> 
-              
-          </div>
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="stock_Medio" label="Ingresar stock_Medio" variant="underlined"></v-text-field>  
-              
-          </div>
-          <div class="col  p-3 text-center">
-              <v-text-field v-model="stock_Minimo" :rules="lengthRules" label="Ingresar stock_Minimo" variant="underlined"></v-text-field>  
-            
-          </div>
-        </div>
-
-
-            </div>
-            <div class="col  p-3 text-center">
-               
-          <v-btn @click="Agregar()" prepend-icon="mdi-cloud-upload" color="primary" >  Grabar</v-btn>
-          <v-btn  prepend-icon="mdi-cancel" color="#FF0000" v-on:click="mostrarConfirmacionEliminar(this.string_id)" >   <v-spacer></v-spacer> Anular</v-btn>
-          </div>
-          <!--alerta suceso-->
-        </v-form>
+             
+    aca cartel eliminar
  <div class="col  p-3 text-center">
             
-      <br><br>
+       
              <alerta-suceso  :visible = "mostrarAlertaSuceso" :mensaje = "mensajeAlertaSuceso"/>
       <!--fin alerta suceso-->
            <!-- Alerta de confirmación personalizada -->
-      <div v-if="mostrarAlertaEliminar" class="alert alert-primary d-flex align-items-center" role="alert">
+        
+      <div v-if="mostrarAlertaEliminar"  class="alert alert-primary d-flex align-items-center" role="alert">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
           <use xlink:href="#info-fill" />
         </svg>
@@ -241,362 +239,54 @@
         </div>
       </div> <!--fin alerta confirmacion-->
    </div>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="cerrarventana()"
-              prepend-icon="mdi-close" 
-            >
-              Cerrar
-            </v-btn>
           
-          </v-card-actions>
             </v-card>
-          </v-dialog>
-      <div class="container-sm">
-         
-  <div class="row">
-   
-          
-   
-  
-  
-  </div>
-  
-          
-  
-  
-         
-          
-  
-   
-          
-            <!--
-            <div class="shadow p-3 mb-5 bg-white rounded table-container text-sm" v-if="$store.state.permisos.includes(11) & !NoHayRegistros">
-         
-            
-            {{ ListaFormularios }} 
-            
-         
-           
-            {{ ListaFormularios }} 
-    </div>
-    @select="editar(ListaFormularios)"
+       
         
-  <DataTable 
-            
-            
-            :data="ListaFormularios" 
-            :columns="columns" 
-            ref="tableCom"
-             class="Dysplay"
-             
-             @select="editar(ListaFormularios)"
-            
-             :options="{
-            
-             
-              
-              select:true,
-              responsive: true,
-              autoWidth:false,
-              lengthMenu: [5,20,50],
-              columnDefs: [
-              { orderable: false, targets: [3] },
-              { width: '40%', targets: [1] },
-              { width: '30%', targets: [3] },
-              ],
-              
-              language: {
-                  processing: 'Procesando...',
-                  lengthMenu: 'Mostrar _MENU_ registros',
-                  zeroRecords: 'No se encontraron resultados',
-                  emptyTable: 'Ningún dato disponible en esta tabla',
-                  infoEmpty: 'Mostrando registros del 0 al 0 de un total de 0 registros',
-                  infoFiltered: '(filtrado de un total de _MAX_ registros)',
-                  search: 'Buscar:',
-                  infoThousands: ',',
-                  loadingRecords: 'Cargando...',
-                  paginate: {
-                  first: 'Primero',
-                  last: 'Último',
-                  next: 'Siguiente',
-                  previous: 'Anterior',
-                  },
-                  aria: {
-                  sortAscending: ': Activar para ordenar la columna de manera ascendente',
-                  sortDescending: ': Activar para ordenar la columna de manera descendente',
-                  },
-                  buttons: {
-                  copy: 'Copiar',
-                  colvis: 'Visibilidad',
-                  collection: 'Colección',
-                  colvisRestore: 'Restaurar visibilidad',
-                  copyKeys:
-                      'Presione ctrl o u2318 + C para copiar los datos de la tabla al portapapeles del sistema. <br /> <br /> Para cancelar, haga clic en este mensaje o presione escape.',
-                  copySuccess: {
-                      1: 'Copiada 1 fila al portapapeles',
-                      _: 'Copiadas %ds fila al portapapeles',
-                  },
-                  copyTitle: 'Copiar al portapapeles',
-                  csv: 'CSV',
-                  excel: 'Excel',
-                  pageLength: {
-                      '-1': 'Mostrar todas las filas',
-                      _: 'Mostrar %d filas',
-                  },
-                  pdf: 'PDF',
-                  print: 'Imprimir',
-                  renameState: 'Cambiar nombre',
-                  updateState: 'Actualizar',
-                  createState: 'Crear Estado',
-                  removeAllStates: 'Remover Estados',
-                  removeState: 'Remover',
-                  savedStates: 'Estados Guardados',
-                  stateRestore: 'Estado %d',
-                  },
-                  autoFill: {
-                  cancel: 'Cancelar',
-                  fill: 'Rellene todas las celdas con <i>%d</i>',
-                  fillHorizontal: 'Rellenar celdas horizontalmente',
-                  fillVertical: 'Rellenar celdas verticalmentemente',
-                  },
-                  decimal: ',',
-                  searchBuilder: {
-                  add: 'Añadir condición',
-                  button: {
-                      0: 'Constructor de búsqueda',
-                      _: 'Constructor de búsqueda (%d)',
-                  },
-                  clearAll: 'Borrar todo',
-                  condition: 'Condición',
-                  conditions: {
-                      date: {
-                      after: 'Despues',
-                      before: 'Antes',
-                      between: 'Entre',
-                      empty: 'Vacío',
-                      equals: 'Igual a',
-                      notBetween: 'No entre',
-                      notEmpty: 'No Vacio',
-                      not: 'Diferente de',
-                      },
-                      number: {
-                      between: 'Entre',
-                      empty: 'Vacio',
-                      equals: 'Igual a',
-                      gt: 'Mayor a',
-                      gte: 'Mayor o igual a',
-                      lt: 'Menor que',
-                      lte: 'Menor o igual que',
-                      notBetween: 'No entre',
-                      notEmpty: 'No vacío',
-                      not: 'Diferente de',
-                      },
-                      string: {
-                      contains: 'Contiene',
-                      empty: 'Vacío',
-                      endsWith: 'Termina en',
-                      equals: 'Igual a',
-                      notEmpty: 'No Vacio',
-                      startsWith: 'Empieza con',
-                      not: 'Diferente de',
-                      notContains: 'No Contiene',
-                      notStartsWith: 'No empieza con',
-                      notEndsWith: 'No termina con',
-                      },
-                      array: {
-                      not: 'Diferente de',
-                      equals: 'Igual',
-                      empty: 'Vacío',
-                      contains: 'Contiene',
-                      notEmpty: 'No Vacío',
-                      without: 'Sin',
-                      },
-                  },
-                  data: 'Data',
-                  deleteTitle: 'Eliminar regla de filtrado',
-                  leftTitle: 'Criterios anulados',
-                  logicAnd: 'Y',
-                  logicOr: 'O',
-                  rightTitle: 'Criterios de sangría',
-                  title: {
-                      0: 'Constructor de búsqueda',
-                      _: 'Constructor de búsqueda (%d)',
-                  },
-                  value: 'Valor',
-                  },
-                  searchPanes: {
-                  clearMessage: 'Borrar todo',
-                  collapse: {
-                      0: 'Paneles de búsqueda',
-                      _: 'Paneles de búsqueda (%d)',
-                  },
-                  count: '{total}',
-                  countFiltered: '{shown} ({total})',
-                  emptyPanes: 'Sin paneles de búsqueda',
-                  loadMessage: 'Cargando paneles de búsqueda',
-                  title: 'Filtros Activos - %d',
-                  showMessage: 'Mostrar Todo',
-                  collapseMessage: 'Colapsar Todo',
-                  },
-                  
-                  thousands: '.',
-                  datetime: {
-                  previous: 'Anterior',
-                  next: 'Proximo',
-                  hours: 'Horas',
-                  minutes: 'Minutos',
-                  seconds: 'Segundos',
-                  unknown: '-',
-                  amPm: ['AM', 'PM'],
-                  months: {
-                      0: 'Enero',
-                      1: 'Febrero',
-                      10: 'Noviembre',
-                      11: 'Diciembre',
-                      2: 'Marzo',
-                      3: 'Abril',
-                      4: 'Mayo',
-                      5: 'Junio',
-                      6: 'Julio',
-                      7: 'Agosto',
-                      8: 'Septiembre',
-                      9: 'Octubre',
-                  },
-                  weekdays: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-                  },
-                  editor: {
-                  close: 'Cerrar',
-                  create: {
-                      button: 'Nuevo',
-                      title: 'Crear Nuevo Registro',
-                      submit: 'Crear',
-                  },
-                  edit: {
-                      button: 'Editar',
-                      title: 'Editar Registro',
-                      submit: 'Actualizar',
-                  },
-                  remove: {
-                      button: 'Eliminar',
-                      title: 'Eliminar Registro',
-                      submit: 'Eliminar',
-                      confirm: {
-                      _: '¿Está seguro que desea eliminar %d filas?',
-                      1: '¿Está seguro que desea eliminar 1 fila?',
-                      },
-                  },
-                  
-                  multi: {
-                      title: 'Múltiples Valores',
-                      info: 'Los elementos seleccionados contienen diferentes valores para este registro. Para editar y establecer todos los elementos de este registro con el mismo valor, hacer click o tap aquí, de lo contrario conservarán sus valores individuales.',
-                      restore: 'Deshacer Cambios',
-                      noMulti:
-                      'Este registro puede ser editado individualmente, pero no como parte de un grupo.',
-                  },
-                  },
-                  info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                  stateRestore: {
-                  creationModal: {
-                      button: 'Crear',
-                      name: 'Nombre:',
-                      order: 'Clasificación',
-                      paging: 'Paginación',
-                      search: 'Busqueda',
-                      select: 'Seleccionar',
-                      columns: {
-                      search: 'Búsqueda de Columna',
-                      visible: 'Visibilidad de Columna',
-                      },
-                      title: 'Crear Nuevo Estado',
-                      toggleLabel: 'Incluir:',
-                  },
-                  emptyError: 'El nombre no puede estar vacio',
-                  removeConfirm: '¿Seguro que quiere eliminar este %s?',
-                  removeError: 'Error al eliminar el registro',
-                  removeJoiner: 'y',
-                  removeSubmit: 'Eliminar',
-                  renameButton: 'Cambiar Nombre',
-                  renameLabel: 'Nuevo nombre para %s',
-                  duplicateError: 'Ya existe un Estado con este nombre.',
-                  emptyStates: 'No hay Estados guardados',
-                  removeTitle: 'Remover Estado',
-                  renameTitle: 'Cambiar Nombre Estado',
-                  },
-              },
-  
-              }" >
-              <thead>
-                  <tr>
-              <th >ID</th>
-              <th >Titulo del formulario</th>
-              <th >Descripcion</th>
-              <th >Acciones</th>
-            </tr>
-              </thead>
-              
-              
-              
-      </DataTable>
-   --> 
-          
-   
-      
-      <!-- Nueva tabla-->
-  
-  
-        <!-- Busqueda con tarjetas
-      <div class="container cont">
-  
-  <div class="row">
-  
-    <div class="col-md-12">
-    
-     
-      
-      <input type="text" v-model="buscar" class="form-control" placeholder="Ejemplo: Charmander"/>              
-  
-    </div>
-  
-  </div>
-  
-  <div class="row mt-3">
-  
-    <div class="col-md-4" v-for="item in ListaFormularios" v-bind:key="item.idConfigForm"> 
-  
-      <div class="card mb-3">
-        
-        <div class="card-body">
-          <h3 class="card-title mb-3">{{ item.titulo }}</h3>
-          <p class="card-text">
-            <strong>Tipo:</strong> {{ item.idConfigForm }} 
-          </p>
-          <p class="card-text">
-            <strong>Tipo:</strong> {{ item.descripcion }} 
-          </p>
-          
-        </div>
-        <v-btn @click="Mostrar(  item.titulo, item.descripcion)" color="primary" prepend-icon="mdi-open-in-new"></v-btn>
-      </div>
-  
-    </div>
-  
-  </div>
-  
-  </div>
-      -->
-  
-  
-  </div>    
   </div>
 
-  <v-layout style=" max-width: 100%;">
+  <!-- Ventana GRABER -->
+ aca
+<v-dialog
+            v-model="VentanaGrabar"
+            persistent
+            width="500"
+  > 
+  <v-alert
+          shaped
+        color="#CCCCCC"
+        theme="dark"
+        icon="mdi-alert"
+        density="compact"
+        elevation="4"
+        border="top"
+      >
+  <!-- Alerta de confirmación personalizada -->
+      <div v-if="mostrarAlertaGrabar"  role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+                <use xlink:href="#info-fill" />
+            </svg>
+            <div>
+                <div class="row">
+                    <div class="col  p-3 text-center ">    
+                <v-btn @click="VerGrabar()" prepend-icon="mdi-cloud-upload" color="#FFFFFF"  >Confirma Grabar</v-btn>
+          </div>
+          <div class="col  p-3 text-center ">
+          <v-btn  prepend-icon="mdi-cancel" color="#FF0000" @click="cerrarGrabar">   <v-spacer></v-spacer> Cancelar</v-btn>
+        </div>
+        </div>
+            </div>
+        </div>
+        
+        <!--fin alerta confirmacion obtenerValores-->
+    </v-alert>
+    </v-dialog>
+
+</v-card>
+
+<v-layout style=" max-width: 100%;">
           <v-footer class="d-flex flex-column w-100" style=" bottom:0px;max-width: 100%;">
-    <v-card  class="px-4 py-2 bg-primary text-center w-100" elevation="16">
+    <v-card  class="px-4 py-2 bg-light text-center w-100" elevation="16">
       <strong>© 2024 | Excelencia Digital Sotfware</strong>
 
       <v-spacer></v-spacer>
@@ -610,8 +300,9 @@
   </template>
   <script>
   
-  //import datos from "../assets/json/pokemones.json";
-  
+  import combobox from '../components/combobox.vue';
+  import ListarMed from '../components/ListarMed.vue';
+  import BuscarMed from '../components/BuscarMed.vue';
   import BarraNavegacion from '@/components/BarraNavegacion.vue';
   import Spinner from '@/components/Spinner.vue';
   import AlertaSuceso from '@/components/AlertaSuceso.vue';
@@ -620,32 +311,29 @@
   import DataTablesCore from 'datatables.net-bs5';
   import Buttons from 'datatables.net-buttons-bs5';
   import 'datatables.net-responsive-bs5';
-  
-  
+
+ 
   
   import { ref } from 'vue';
-  //import { computed , onMounted, ref } from "vue";
+
   
-   DataTable.use(DataTablesCore);
-  DataTable.use(DataTablesCore);
-  DataTable.use(Select);
-  
-  
-  //const props = defineProps({
-   ////   employees:{type: Object}, ListaFormularios:{type: Object},
-  
-  //});
-  //const keyword = ref('');
-  //const ListaFormularios = ref([]);
-  //const computedListaform = computed(() => ListaFormularios.value.filter(i => i.nombre.toLowerCase().includes(keyword.value.toLowerCase())))
+ 
   const table = ref();
   export default {
+    ListaFormulariosArticulos:'',
+        rows: [],
+        searchQuery: '',
+        currentPage: 1,
+        itemsPerPage: 3,
     arreglobuscador: [],
     name: 'TableCom',
     name: "Formularios",
     components: {
       'spinner': Spinner,
       'barra-navegacion': BarraNavegacion,
+      ListarMed,
+      BuscarMed,
+      combobox,
       'alerta-suceso': AlertaSuceso,
        DataTable
     },
@@ -656,8 +344,15 @@
     
     data: function () {
       return {
-
-
+        nroarticulo:'',
+        Codigo: '',
+        Nombre: '',
+        NroRegistro: '',
+        Precio: '',
+        ValorCombo: '',
+        ValorComboTipo: '',
+        ListaCombos: null,
+        ListaCombosTipo: null,
         nroRegistro: '',
         buscar: '',
         filter: null,
@@ -669,23 +364,18 @@
           selectedRow: '',
           //************ */
        //***Control de texto */
-       lengthRules: [
-        value => {
-          if (  /[0-9-]+/.test(value) && value?.length < 10) return true
-            return 'Acepta valores numericos y hasta 10 digitos.'
-        },
-      ],
+       //lengthRules: [
+       // value => {
+       //   if (  /[0-9-]+/.test(value) && value?.length < 10) return true
+        //    return 'Acepta valores numericos y hasta 10 digitos.'
+       // },
+      //],
        //************ */ 
-          
-        columns:[
-          {data:'idConfigForm',text: 'idConfigForm', value: 'idConfigForm', sortable: true},
-          {data:'titulo',text: 'titulo', value: 'titulo', sortable: true},
-          {data:'descripcion', text: 'descripcion', value: 'descripcion', sortable: true },
-          {data:null,
-          render: function (data, type, row, meta) {
-            return `-`
-          }}
-        ], 
+       ListaFormulariosArticulos:'',
+        rows: [],
+        searchQuery: '',
+        currentPage: 1,
+        itemsPerPage: 5,
         titulo_Modal:"",
         Id: null, 
         datos: null,
@@ -694,9 +384,11 @@
         NoHayRegistros: false,
         mostrarAlertaEliminar: false,
         mostrarAlertaSuceso: false,
+        VentanaGrabar: false,
         mensajeAlertaSuceso:"",
         idConfigFormToDelete: null,
         idArticulo:"",
+        ListaFormulariosMed: null,
         nombre: "",
         codigo: "",
         tipo_Articulo: "",
@@ -706,33 +398,138 @@
         Entrega:0,
         troquel:"",
         barra: "",
+        stockminimo: "",
+        stockmedio: "",
+        stockmaximo: "",
         
       }
     },
     created() {
       
-      this.fetch();
+      this.ValorCombo = "0";
+      this.ValorComboTipo = "0";
       this.MostrarCombo();
+      this.MostrarComboTipo();
+      this.idUsuario = this.$store.state.id_usuario;
+      this.fetchArticulosMed();
+      
       
     },
     computed: {
              
-   
-              formTitle () {
-                 return this.Entrega  === 0 ? 'Gargar nuevos datos' : 'Modificar datos'
-              },
-          
-              ListaFormularios1() {
-                
-                return this.datos.filter(item => {
-          return item.nombre.toLowerCase().includes(this.buscar.toLowerCase());
-          
-        });
+      headers() {
+        return this.rows.length > 0 ? Object.keys(this.rows[0]) : [];
       },
+      filteredRows() {
+        if (!this.searchQuery) {
+          return this.rows;
+        }
+        const query = this.searchQuery.toLowerCase();
+        return this.rows.filter(row => 
+          Object.values(row).some(value => 
+            String(value).toLowerCase().includes(query)
+          )
+        );
+      },
+      paginatedRows() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.filteredRows.slice(start, end);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredRows.length / this.itemsPerPage);
+      }
+              //formTitle () {
+            //     return this.Entrega  === 0 ? 'Gargar nuevos datos' : 'Modificar datos'
+             // },
+          
+           //   ListaFormularios1() {
+                
+             //   return this.datos.filter(item => {
+        //  return item.nombre.toLowerCase().includes(this.buscar.toLowerCase());
+          
+       // });
+      //},
            
           },
     methods: {
-    
+      ver2024(){
+alert("grabar");
+
+    },
+      VerGrabar() {
+       
+            this.VentanaGrabar = true;
+            this.mostrarAlertaGrabar = true;
+        },
+        cerrarGrabar() {
+            this.VentanaGrabar = false;
+        },
+      async sendRowData(row) {
+        //Listaform
+      const keys = Object.keys(row);
+      const entries = Object.entries(row);
+      const primerpar = entries[0];  // Valor de la columna
+      this.nroarticulo = primerpar[1];
+      alert(this.nroarticulo);
+      //this.ValorCombo = "1130";
+      const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulosTodos?pTipo=${this.nroarticulo}`)
+          .then((respuesta) => {
+            let data = []; //declarar la variable data
+            this.ListaFormulariosArticulos = respuesta.data.lista;
+            data = respuesta.data.lista;
+            data.forEach(item => {
+              this.Nombre = item.nombre;
+              this.codigo = item.codigo;
+              this.NroRegistro = item.nroregistro;
+              this.NroRegistro = item.nroregistro;
+              this.Precio = item.precio;
+              this.ValorCombo = item.idsector;
+              this.ValorComboTipo = item.idtipo;
+              this.stockminimo = item.stockminimo;
+              this.stockmedio = item.sockmedio;
+              this.stockmaximo = item.stockmaximo;
+              this.troquel = item.troquel;
+              this.barra = item.codbarra;
+              ;
+            });
+            //this.rows = respuesta.data.lista;
+            console.log("IMPORTANTE Muestro rows")
+            console.table(this.ListaFormulariosArticulos);     
+          })
+          .catch(err => {
+            //console.log(err);
+          });
+     
+      
+    },
+    async fetchArticulosMed() {
+        //alert(this.idUsuario);
+        //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
+        //const respuesta = await this.axios.get("/api/ConfigForm/ListaField?pTipo=2136")
+        //const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idConfig}`)
+       const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idUsuario}`)
+          .then((respuesta) => {
+            //this.ListaFormulariosArticulos = respuesta.data.lista
+            this.rows = respuesta.data.lista;
+            console.log("IMPORTANTE Muestro rows")
+            console.table(this.rows);     
+          })
+          .catch(err => {
+            //console.log(err);
+          });
+      // this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
+      },
+      prevPage() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
+      },
+      nextPage() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      },
       
       onSelect(e, dt, type, indexes ){
         //var rowData = dt.rows( indexes ).data().toArray();
@@ -741,28 +538,34 @@
         console.log("aca estoy")
             console.log(dt);
           },
-          Mostrar(V1, V2){
-            this.Entrega = 0;
-        this.dialog = true;
-            this.string_id = V1;
-            this.default_value =V2;
+          //Mostrar(V1, V2){
+          //  this.Entrega = 0;
+       // this.dialog = true;
+         //   this.string_id = V1;
+         //   this.default_value =V2;
             
-          },
-      limpiar(){
-        this.string_id = "";
-        this.default_value ="";
-        this.value_list ="";
+         // },
+         Limpiar(){
+        this.nroarticulo = "0";
+        this.codigo = "";
+        this.Nombre = "";
+        this.codigo = "";
+        this.NroRegistro = "";
+        this.NroRegistro = "";
+        this.Precio = "";
+        this.ValorCombo = "0";
+        this.ValorComboTipo = "0";
+        this.stockminimo = "";
+        this.stockmedio = "";
+        this.stockmaximo = "";
+        this.troquel = "";
+        this.barra = "";
       },
       async MostrarCombo() {
       
-      this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
-      const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2129")
+      const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2131")
         .then((respuesta) => {
           this.ListaCombos = respuesta.data.lista;
-          
-          console.log("Lista Combos");
-          console.log(this.ListaCombos);
-         
           //si no hay formularios en la respuesta de la api mostrar mensaje
           if (this.ListaFormularios.length == 0) {
             this.NoHayRegistros = true
@@ -771,9 +574,19 @@
         .catch(err => {
           console.log(err);
         });
-        
-            
-      this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
+    },
+    async MostrarComboTipo() {
+      const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2130")
+        .then((respuesta) => {
+          this.ListaCombosTipo = respuesta.data.lista;
+          //si no hay formularios en la respuesta de la api mostrar mensaje
+          if (this.ListaFormularios.length == 0) {
+            this.NoHayRegistros = true
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
       nuevo(){
         this.Entrega = 0;
@@ -845,6 +658,7 @@
         this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
       },
       mostrarConfirmacionEliminar(Entrega) {
+      
         this.mostrarAlertaEliminar = true;
     this.idConfigFormToDelete = this.string_id; // Guarda el idConfigForm en data
     
@@ -895,22 +709,62 @@
                   }, 5000);
           });
       },
+       async BuscarMedicamento() {
+    const respuesta = await this.axios.get(`/api/ConfigForm/BuscaAlfaBetaNombre?pNombre=${this.buscar}`, {
+    
+ })
+        .then((respuesta) => {
+        this.ListaFormulariosMed = respuesta.data.lista
+        this.datosMed = this.ListaFormulariosMed;
+        console.log("datos de busqueda de alfabeta");
+        console.log(this.ListaFormulariosMed);
+        console.log("FIN");
+        if (this.ListaFormulariosMed.length == 0) {
+            //this.NoHayRegistros = true
+            alert("No se encontraron datos para la busqueda")
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+      Mostrar(V1, V2, V3, V4, V_barra, V_troquel) {
+     //alert(V1);
+     this.Nombre = V1 +" -  "+ V4;
+     this.NroRegistro = V3;
+     this.Precio = V2;
+     this.barra = V_barra;
+     this.troquel = V_troquel;
+        //const inputDetalleInternado = document.getElementsByName("NroRegistro")[0];
+        //inputDetalleInternado.value = V3;
+        //const pPrecio = document.getElementsByName("Precio")[0];
+        //pPrecio.value = V2;
+        
+        const pNombre = document.getElementsByName("Nombre")[0];
+        pNombre.value = V1 +" -  "+ V4;
+        
+        this.ListaFormulariosMed = null;
+      
+    },
+    
       async eliminarform(idConfigFormToDelete) {
-        await this.axios.put(`/api/ConfigForm/EliminaCampos/1/${this.idConfigFormToDelete}`)
+        await this.axios.put(`/api/ConfigForm/EliminaCampos/14/${this.nroarticulo}`)
         //await this.axios.put(`/api/ConfigForm/EliminaCampos/1/1`)
           .then(datos => {
             this.mostrarAlertaEliminar = false;
             this.mensajeAlertaSuceso = "Eliminado exitosamente";
             this.mostrarAlertaSuceso = true;
             //this.fetch();
-  
+            this.fetchArticulosMed();
             setTimeout(() => {
                      this.mostrarAlertaSuceso = false;
                   }, 5000);
           });
       },
+      
      
     },
+    
   }
   </script>
   <style>

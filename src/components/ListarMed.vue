@@ -1,13 +1,11 @@
 <template>
-<v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
-    Listar en Medicamentos 
+    <div>
+    
+        <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
+    Listado de Articulos  
 
 </v-chip>
-    <!-- Tabla que muestra los medicamentos-->
-
-<div style="max-width: 1300px" class="shadow p-3 mb-2 bg-white rounded table-container text-sm container-sm" v-if="$store.state.permisos.includes(11) & !NoHayRegistros">
-          <!-- Tabla del Formulario -->
-           <div class="row" >
+<div class="row bg-white" >
               <div class="col  p-3 text-center ">
                
                 </div>
@@ -15,126 +13,152 @@
                  
                 </div>
                 <div class="col  p-3 text-center ">
-                  <v-text-field v-model="buscar" label="Buscador por nombre de medicamento" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
+                    <v-text-field v-model="searchQuery" label="Buscador" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
                 </div>
-          </div>  
-     
-<table :value="customers" class="table  table-hover "  color="#000000" >
-          <thead>
-            <tr>
-              <th ><v-chip class="justify-center " color="#000000">Identificador</v-chip></th>
-              <th ><v-chip class="justify-center "  color="#000000">Codigo</v-chip></th>
-              <th ><v-chip class="justify-center "  color="#000000">Nombre</v-chip></th>
-              <th ><v-chip class="justify-center "  color="#000000">Precio</v-chip></th>
-              <th ><v-chip class="justify-center "  color="#000000">Nro Registro</v-chip></th>
-              <th  ><v-chip class="justify-center"  color="#000000">Ver Datos</v-chip></th>
-            </tr>
-          </thead>
-          <tbody v-for="ListaMed of ListaFormulariosArticulos" :key="ListaMed.articulosid">
-            <tr>
-              <td class="bg-white " >
-                
-                  <v-icon start icon="mdi-arrow-right" ></v-icon>  {{ ListaMed.articulosid }}
-             
-            </td>
-              <td class="bg-white ">
-    
-              {{ ListaMed.codigo }}
-           
-              </td>
-              <td  class="bg-white ">{{ ListaMed.nombre }}</td>
-              <td  class="bg-white ">$ {{ ListaMed.precio }}</td>
-              <td  class="bg-white ">{{ ListaMed.nroregistro }}</td>
-              <td class="nowrap bg-white " >
-                <div class="row">
-                  <div class="col-auto">
-                     <v-btn @click="VerArticulos(ListaMed)"  prepend-icon="mdi-open-in-new" class="sm"></v-btn>
-                  </div>
-                
-                </div>
-              </td>
-            </tr>
-         
-         
-          </tbody>
-       
+          </div>
+      
+      <table class="table table-bordered table-hover bg-white">
+        <thead>
+          <tr>
+            <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in paginatedRows" :key="rowIndex">
+            <td v-for="(header, colIndex) in headers" :key="colIndex">{{ row[header] }}</td>
+            <td>
+            <v-btn @click="sendRowData(row)" class="bg-primary" >Ver</v-btn>
+          </td>
+          </tr>
           
-        </table> 
-
+        </tbody>
+      </table>
+      
+      <div class="pagination">
+        <v-btn @click="prevPage" :disabled="currentPage === 1" class="bg-primary">Anterior</v-btn>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <v-btn @click="nextPage" :disabled="currentPage === totalPages" class="bg-primary">Siguiente</v-btn>
       </div>
-</template>
-<script>
+      
+    </div>
+  </template>
+  
+  <script>
 
-import AlertaSuceso from "../components/AlertaSuceso.vue";
-export default {
-  name: 'EditarFilaModalN',
-  components: {
-    AlertaSuceso,
+  export default {
+    props: {
+    idConfig: {
+      type: String,
+      required: true
+    }
   },
-  props: {
-    fila: Object,
-    campoTexto: String,
-  },
-  data() {
-    return {
-            buscar: '',
-            idUsuario: null,
-            ListaFormulariosArticulos: null,
-            datosArticulos: null,
-        };
-    },
-    computed: {
-        ListaFormulariosArticulos() {
-        //alert("Ingreso a Filter");
-        //const idFormulario = this.$route.params.idConfigForm;
-        //if(idFormulario == 2136){
-          if (!this.datosArticulos) {
-        return [];
-      }
-          return this.datosArticulos.filter(item => {
-          return item.nombre.toLowerCase().includes(this.buscar.toLowerCase());
-        });
-            },
-    },
-    mounted() {
+    data() {
+      return {
+        nombre: '',
+        ListaFormulariosArticulos:'',
+        rows: [],
+        searchQuery: '',
+        currentPage: 1,
+        itemsPerPage: 10
+      };
     },
     created() {
         this.idUsuario = this.$store.state.id_usuario;
-        this.fetchArticulosMed();
-        
+    this.fetchArticulosMed();
+  },
+    computed: {
 
-    },
-   methods: {
-    VerArticulos(Listaform){
-        //alert(Listaform.codigo);
-        const inputCodigo = document.getElementsByName("Codigo")[0];
-        inputCodigo.value = Listaform.codigo;
-        const inputNroRegistro = document.getElementsByName("NroRegistro")[0];
-        inputNroRegistro.value = Listaform.nroregistro;
-        const pPrecio = document.getElementsByName("Precio")[0];
-        pPrecio.value = Listaform.precio;
-        const pNombre = document.getElementsByName("Nombre")[0];
-        pNombre.value = Listaform.nombre;
-        //this.ListaFormulariosMed = null;
+      headers() {
+        return this.rows.length > 0 ? Object.keys(this.rows[0]) : [];
       },
+      filteredRows() {
+        if (!this.searchQuery) {
+          return this.rows;
+        }
+        const query = this.searchQuery.toLowerCase();
+        return this.rows.filter(row => 
+          Object.values(row).some(value => 
+            String(value).toLowerCase().includes(query)
+          )
+        );
+      },
+      paginatedRows() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.filteredRows.slice(start, end);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredRows.length / this.itemsPerPage);
+      }
+    },
+    methods: {
+        
+    sendRowData(row) {
+      const keys = Object.keys(row);
+      //alert(keys[0]); Nombre de la columna
+      const entries = Object.entries(row);
+      const primerpar = entries[0];  // Valor de la columna
+      //alert('Dato de la fila seleccionada:', row);
+      console.log('Dato de la fila seleccionada:', primerpar[1]);
+      //this.processRow(row);
+      this.nombre = 'Nuevo Valor';  // Asignar el valor deseado
+      eventBus.config.globalProperties.$emit('nombreUpdated', this.nombre);
+      
+    },
+ 
     async fetchArticulosMed() {
         
         //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
-        const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idUsuario}`)
+        //const respuesta = await this.axios.get("/api/ConfigForm/ListaField?pTipo=2136")
+        //const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idConfig}`)
+       const respuesta = await this.axios.get(`/api/ConfigForm/ListarConsumo?pTipo=${this.idUsuario}`)
           .then((respuesta) => {
-            this.ListaFormulariosArticulos = respuesta.data.lista
-            this.datosArticulos = this.ListaFormulariosArticulos;
-            console.log("IMPORTANTE Muestro ListaFormulariosArticulos")
-            console.table(this.ListaFormulariosArticulos);     
+            //this.ListaFormulariosArticulos = respuesta.data.lista
+            this.rows = respuesta.data.lista;
+            console.log("IMPORTANTE Muestro rows")
+            console.table(this.rows);     
           })
           .catch(err => {
             //console.log(err);
           });
       // this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
       },
-    
-},
-
-}
-
-</script>
+      prevPage() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
+      },
+      nextPage() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      }
+    }
+  };
+  </script>
+  
+  <style scoped>
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  .table th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  .pagination button {
+    margin: 0 5px;
+  }
+  </style>
+  
+  

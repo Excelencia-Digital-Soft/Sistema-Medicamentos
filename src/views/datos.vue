@@ -10,11 +10,11 @@
     <div class="container-sm" style="max-width: 1300px; margin-bottom: 1%; margin-top: 1%">
           <!--CONTENDOR PRINCIPAL    -->
 <!--  COmponenete que muestra los campos de cada fomrulario   -->
-<EditarFilaModalN />
-   
+<EditarFilaModalN   />
+    <!-- Componente modal de edición -->
 
 
-<br>
+
 <div class="row shadow p-3"   style=" max-width: 1300px; "  >
       <div class="col-6">
           <alerta-suceso  :visible = "mostrarAlertaSuceso" :mensaje = "mensajeAlertaSuceso"/>
@@ -28,6 +28,7 @@
         <!--Listado de Botones-->
    
         <v-row>
+          
         <div v-for="formulariobot of dabotones" :key="formulariobot.idConfigForm">
         <v-col cols="auto" class="col-3">
         <v-btn 
@@ -117,13 +118,11 @@
   > 
   <v-card>
   <div class="row shadow p-3" >
-     
+     aca
   </div>
   
-       <!-- Componente modal de edición -->
-       <EditarFilaModal v-if="dialog" :fila="filaAEditar" :idConfigForm="filaAEditar.id_ConfigForm"
-          :idAnswer="filaAEditar.id_Answer" :idField="filaAEditar.id_Field" @edicion-guardada="guardarEdicion"
-          @cerrar-modal="cerrarModal" />
+       <!-- Componente modal de edición -->hola
+       <EditarFilaModalN v-if="dialog" :fila="filaAEditar" />
   <v-card-actions>
           <v-spacer></v-spacer>
           
@@ -176,10 +175,7 @@
       <AlertaSuceso  :visible = "mostrarAlertaSuceso" :mensaje = "mensajeAlertaSuceso"/>
       </div>
 
-      <!-- Componente modal de edición -->
-      <EditarFilaModal v-if="mostrarModal" :fila="filaAEditar" :idConfigForm="filaAEditar.id_ConfigForm"
-          :idAnswer="filaAEditar.id_Answer" :idField="filaAEditar.id_Field" @edicion-guardada="guardarEdicion"
-          @cerrar-modal="cerrarModal" />
+     
 
   </div>
 </div>  
@@ -361,7 +357,7 @@ export default {
   }
 },
   methods: {
-
+    
     handleClick(functionName) {
     if (typeof this[functionName] === 'function') {
       this[functionName]();
@@ -410,13 +406,7 @@ export default {
       pNombre.value = Listaform.nombre;
       //this.ListaFormulariosMed = null;
     },
-    cerrarventanaMed(){
-      
-      this.ListaFormulariosMed = null,
-    this.dialogMed = false;
-    
-    
-  },
+   
   async fetchArticulos() {
       
       //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
@@ -1002,7 +992,7 @@ alert('El usuario hizo clic en "Aceptar"');
   },
   async Grabar() {
         
-     
+    this.MostrarSpinner = true;
         // Obtén una referencia al contenedor de campos dinámicos
         var contenedor = document.getElementById("ContenedorDeCampos");
         // Encuentra todos los elementos de formulario dentro del contenedor
@@ -1052,11 +1042,16 @@ alert('El usuario hizo clic en "Aceptar"');
               this.mensajeAlertaSuceso = "Grabaron Correctamente los datos";
               this.mostrarAlertaSuceso = true;
               this.VentanaGrabar = false;
+              
              setTimeout(() => {
                      this.mostrarAlertaSuceso = false;
+                     //refresca la pagina Props emits
+              window.location.reload();
                   }, 5000);
             });
-        },
+        
+            this.MostrarSpinner = false;
+          },
   async GrabarMedicamento() {
  
     ///////-------------------------------

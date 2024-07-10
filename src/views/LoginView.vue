@@ -39,7 +39,7 @@
       <v-alert
           shaped
           
-        theme="green"
+        theme="dark"
         icon="mdi-arrow-up-bold-box-outline"
         density="compact"
         elevation="4"
