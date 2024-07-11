@@ -133,7 +133,7 @@
           });
      },
      async MostrarComboI() {
-          const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2131")
+          const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=4&pId=0")
           .then((respuesta) => {
             this.ListaCombosI = respuesta.data.lista;
             if (this.ListaFormularios.length == 0) {
@@ -146,7 +146,7 @@
       }, 
      
       async ComboTipoMedicamento() {
-       const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2130")
+       const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=3&pId=0")
           .then((respuesta) => {
             this.ComboListaTipoMedicamento = respuesta.data.lista;
             //si no hay formularios en la respuesta de la api mostrar mensaje
@@ -213,7 +213,7 @@
       async MostrarCombo() {
         
         //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
-        const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2129")
+        const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=4&pId=0")
           .then((respuesta) => {
             this.ListaCombos = respuesta.data.lista;
             
@@ -236,7 +236,7 @@
       async MostrarComboII() {
         
         //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
-        const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2130")
+        const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=4&pId=0")
           .then((respuesta) => {
             this.ListaCombosII = respuesta.data.lista;
             

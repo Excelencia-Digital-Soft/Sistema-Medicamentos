@@ -27,6 +27,7 @@
        
         <select v-model="filaEditadaPorNombre[campo.nombre]" v-if="campo.tipo === 'select'"   :class="campo.clase"
         :required="campo.requerido" :identificador="campo.id_Field">
+        <option value="">Seleccione {{campo.nombre}} </option>
         <option v-for="opcion in this[campo.opciones.trim()]" :value="opcion.codigo">{{opcion.nombre}}</option>
         </select>
        <!--
@@ -117,11 +118,12 @@ this.MostrarCombo();
 this.MostrarComboI();
 this.MostrarComboII();
 this.MostrarComboIII();
+this.ComboTipoMedicamento();
 },
 
 methods: {
 async ComboTipoMedicamento() {
-const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2130")
+const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=3&pId=0")
   .then((respuesta) => {
     this.ComboListaTipoMedicamento = respuesta.data.lista;
     //si no hay formularios en la respuesta de la api mostrar mensaje
@@ -158,7 +160,7 @@ const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2
 async MostrarComboI() {
 
 //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
-const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2131")
+const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=4&pId=0")
   .then((respuesta) => {
     this.ListaCombosI = respuesta.data.lista;
     
@@ -199,6 +201,19 @@ const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2
       
 //this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
 }, 
+async ComboTipoMedicamento() {
+       const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=3&pId=0")
+          .then((respuesta) => {
+            this.ComboListaTipoMedicamento = respuesta.data.lista;
+            //si no hay formularios en la respuesta de la api mostrar mensaje
+            if (this.ListaFormularios.length == 0) {
+              this.NoHayRegistros = true
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      },
 async MostrarComboIII() {
 
 //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
@@ -294,16 +309,7 @@ else {
 cerrarModal() {
 this.$emit('cerrar-modal');
 },
-BuscaValor(v1) {
-  const encontrado = "0";
- // for (let [clave, valor] of Object.entries(this.filaEditadaPorNombre)) {
-           // if (clave === "V1" && valor === valorBuscado) {
-          //      encontrado = this.filaEditadaPorNombre[clave];
-          //      break;
-           // }
-        //}
-        return encontrado
-},
+
 
 async guardarEdicion() {
   var contenedor = document.getElementById("ContenedorDeCampos");
@@ -331,34 +337,48 @@ async guardarEdicion() {
         var variable_valor = "";
         var valor_sql = "";
         var v = "";
+       
         //Object.entries(this.filaEditadaPorNombre).forEach(([clave, valor]) => {
     ///console.log(`Clave: ${clave}, Valor: ${valor}`);
     //variable = variable + {clave};
 
 //});
+var primero ="";
 for (let clave in this.filaEditadaPorNombre) {
     if (this.filaEditadaPorNombre.hasOwnProperty(clave)) {
-        // Asignar la cadena formateada a una variable
-       // let variable = `${clave}: ${this.filaEditadaPorNombre[clave]}`;
-        variable = variable +  `${clave} = ${this.filaEditadaPorNombre[clave]} ,`;
-        //variable_valor = variable_valor + `${this.filaEditadaPorNombre[clave]}`;
-        //console.log(cadenaFormateada);
+        
+       primero = primero +  `${clave} = ${this.filaEditadaPorNombre[clave]}`;
+       break;
     }
+
+    
 }
 //console.log(variable);
 //console.log(variable_valor);
 ////////////////////////////
 //console.log("aca campos");
 //console.log(campos);
-campos.forEach(function (campo) {
-        valores.push({
-        id_ConfigForm: idConfigForm,  // Puedes ajustar este valor según tus necesidades
-        Campo: campo.getAttribute("v-model"),  // Utiliza getAttribute para obtener el valor de key
-        valor: campo.value,
-        tipo: campo.getAttribute("type"),
-        });    
-        
-       });
+const BuscaValor = (abuscar) => {
+  let variable = '';
+  Object.entries(this.filaEditadaPorNombre).forEach(([clave, valor]) => {
+    if(abuscar == `${clave}`){
+      variable = `${valor}`
+    }
+    //variable += `${clave} = ${valor} ,`;
+  });
+  return variable;
+};
+campos.forEach((campo) => {
+  const variable = BuscaValor(campo.getAttribute("v-model"));
+
+  valores.push({
+    id_ConfigForm: idConfigForm,
+    Campo: campo.getAttribute("v-model"),
+    valor: variable,
+    cadenaFormateada: variable.trim(),
+    tipo: campo.getAttribute("type")
+  });
+});
         ////////////////////////////
         ////////////////////////////
         ////////////////////////////
@@ -372,22 +392,37 @@ campos.forEach(function (campo) {
         var valor_sql = "";
         var v = "";
         for (var i = 0; i < valores.length; i++) {
-          variable = variable +","+ valores[i].Campo;
-          if((valores[i].tipo == "text")|| (valores[i].tipo == "date"))
-            v = "'"+ valores[i].valor.replace(",", ".") +"'";
-        else
-        {
-        v = valores[i].valor;
-        //v= v.replace(",", ".");
+          if( i > 0){
+          variable = valores[i].Campo;
+          if((valores[i].tipo == "text")|| (valores[i].tipo == "date")|| (valores[i].tipo == ""))
+           v = "'"+ valores[i].valor.replace(",", ".").trim() +"'";
+           else
+           {
+           v = valores[i].valor;//v= v.replace(",", ".");
+          }
+          valor_sql = valor_sql + variable +" = "+ v +" , ";  
+                 
         }
-          variable_valor = variable_valor+","+v;
-          
-        }
-        var pvariable = variable + ", usuario";
-        var pvariable_valor = variable_valor + ","+this.idUsuario;
-        console.log(pvariable.slice(1));
-        console.log(pvariable_valor.slice(1));  
+      }
+        //var pvariable = variable + ", usuario";
+        //var pvariable_valor = variable_valor + ","+this.idUsuario;
+        const nuevoValor = valor_sql.trim().substring(0, valor_sql.trim().length - 1);
+        console.log(nuevoValor);
+        console.log(primero);
+        //console.log(pvariable.slice(1));
+        //console.log(pvariable_valor );  
     ///////////////////////////////////////////////
+    await this.axios.put(`/api/ConfigForm/ModificarTabla/${this.$route.params.idConfigForm}/${this.nuevoValor}/${this.primero}}`)
+          .then(datos => {
+            this.mostrarAlertaEliminar = false;
+            this.mensajeAlertaSuceso = "Los datos se modificaron correctamente";
+            this.mostrarAlertaSuceso = true;
+            //this.fetch();
+  
+            setTimeout(() => {
+                     this.mostrarAlertaSuceso = false;
+                  }, 5000);
+          });
     /////////FIN/////////////////////////
     },
 async guardarEdicionOriginal() {
