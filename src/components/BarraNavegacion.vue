@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="4"  >
-  <b-navbar class="navbar  navbar-dark text-white fixed " fixed >
+  <b-navbar class="navbar  navbar-dark text-white fixed  " fixed >
     <div class="container-fluid text-black" >
       <div>
         <!-- Icono de Menu -->
@@ -10,7 +10,7 @@
           
         </button>
       </div>
-      <v-chip class="d-flex  darken-1 sm text-h5 bg-grey"  color="#000000" elevation="1"   >  <b>SISTEMA DE MEDICAMENTOS</b></v-chip>
+      <v-chip class="d-flex  darken-1 sm text-h5 "  color="#000000" elevation="1"   >  <b>SISTEMA DE MEDICAMENTOS</b></v-chip>
       <div class="navbar-brand text-black">
         <div class="row text-white">
           <!-- informacion de la sesion, cerrar sesion bg-primary-->

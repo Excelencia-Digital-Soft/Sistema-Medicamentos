@@ -37,13 +37,18 @@
         :color="formulariobot.color"
         @click="handleClick(formulariobot.metodo)"
         v-if="$store.state.permisos.includes(10)">
-        {{ formulariobot.texto }} 
+         {{ formulariobot.texto }} 
+       
         </v-btn>
+        
+              
+            
         </v-col>
         </div>
         </v-row>
     </div>
 </div>
+
 <br>
 <!-- Codigo propio de cada formulario -->
 <div v-show="EsVisible_2136">

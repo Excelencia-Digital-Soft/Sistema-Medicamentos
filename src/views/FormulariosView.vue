@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     async fetch() {
-      this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
+      //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
       const respuesta = await this.axios.get("/api/ConfigForm/ListaFormulariosCRUD")
         .then((respuesta) => {
           this.ListaFormularios = respuesta.data.lista
@@ -165,7 +165,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
+      //this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
     },
 
     mostrarConfirmacionEliminar(Listaform) {

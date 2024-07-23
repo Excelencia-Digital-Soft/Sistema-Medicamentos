@@ -55,7 +55,7 @@
       Selecciona un Tipo de Medicamento
       <select v-model="ValorComboTipo" class="form-select" id="Combo" >
         <option value="0">Seleccionar un Tipo de Medicamento...</option> 
-        <option v-for="Combo in ListaCombosTipo" :key="Combo.codigo"  :value="Combo.codigo">{{Combo.codigo}} -- {{Combo.nombre}}</option>
+        <option v-for="Combo in ComboListaTipoMedicamento" :key="Combo.codigo"  :value="Combo.codigo">{{Combo.codigo}} -- {{Combo.nombre}}</option>
       </select>  
        
 </div>
@@ -85,16 +85,35 @@
                 
                 <v-text-field  v-model="buscar" label="Busqueda por nombre de medicamento de AlfaBeta" variant="underlined" block></v-text-field>
               </div>
-              <div class="col-3 text-center "> 
+              <div class="col-3 text-left "> 
+               <!--
                 <v-btn @click="BuscarMedicamento()" class="bg-primary" p prepend-icon="mdi-cloud-upload" block>Buscar en AlfaBeta</v-btn> 
+             -->
+             
+                <v-card
+                @click="BuscarMedicamento()" 
+                class="mx-auto"
+                elevation="10"
+                prepend-icon="mdi-magnify" 
+                color ="primary"
+              >
+                <template v-slot:title>
+                 Buscar
+                </template>
+
+                <v-card-text>
+                  Buscar medicamento en AlfaBeta
+                </v-card-text>
+              </v-card>
+             
               </div>
               
             </div>
 </div>
 <div >
     <div class="content" ref="scrollContainer">
-      <div class="row mt-5  shadow p-3">
-        <div class="col-md-4 shadow p-3" v-for="item in ListaFormulariosMed" v-bind:key="item.nroRegistro"> 
+      <div class="row mt-5  shadow p-3" >
+        <div class="col-md-4 shadow p-3" v-for="item in ListaFormulariosMed" v-bind:key="item.nroRegistro" @click="Mostrar(  item.nombre, item.precio, item.nroRegistro, item.presentacion,item.codBarras,item.troquel)"> 
           <div class="card mb-4 bg-primary shadow p-3">
             <div class="card-body"><v-icon start icon="mdi-arrow-right" ></v-icon>
               {{ item.nombre }} -  {{ item.presentacion }}   <br>
@@ -102,7 +121,7 @@
                 <div class="row" >
                   <div class="col-6 text-left "><strong>$</strong> {{ item.precio }} </div>
                   <div class="col-6 text-center ">
-                  <v-btn class="bg-primary" fab  @click="Mostrar(  item.nombre, item.precio, item.nroRegistro, item.presentacion,item.codBarras,item.troquel)"  prepend-icon="mdi-open-in-new">Seleccionar</v-btn>
+                  
                   </div>
             </div>        
          </div>
@@ -113,17 +132,18 @@
 </div>
 
 </div>
+
 <div class="row shadow p-3 bg-white" >
 <div class="row bg-white" >
 <div class="col-2" ></diV>
   <div class="col-3" >
- <v-btn @click="VerGrabar()" color="primary" p prepend-icon="mdi-cloud-upload" block>Grabar</v-btn> 
+ <v-btn @click="VerGrabar()" color="primary" p prepend-icon="mdi-checkbox-marked-circle" block>Grabar</v-btn> 
  </div>
  <div class="col-3" >
- <v-btn @click="Limpiar()" color="primary" p prepend-icon="mdi-cloud-upload" block>Limpiar</v-btn> 
+ <v-btn @click="Limpiar()" color="primary" p prepend-icon="mdi-minus-circle" block>Limpiar</v-btn> 
  </div>
  <div class="col-3">
-  <v-btn @click="mostrarConfirmacionEliminar()" color="#FF0000" p prepend-icon="mdi-cloud-upload" block>Eliminar</v-btn> 
+  <v-btn @click="mostrarConfirmacionEliminar()" color="#FF0000" p prepend-icon="mdi-cancel" block>Eliminar</v-btn> 
 </div>
 </div>
 </div>
@@ -157,7 +177,7 @@
           <tr v-for="(row, rowIndex) in paginatedRows" :key="rowIndex">
             <td v-for="(header, colIndex) in headers" :key="colIndex">{{ row[header] }}</td>
             <td>
-            <v-btn @click="sendRowData(row)" class="bg-primary" >Ver</v-btn>
+            <v-btn @click="sendRowData(row)" prepend-icon="mdi-pencil" class="bg-primary" >Ver</v-btn>
           </td>
           </tr>
           
@@ -246,7 +266,7 @@
   </div>
 
   <!-- Ventana GRABER -->
- aca
+ 
 <v-dialog
             v-model="VentanaGrabar"
             persistent
@@ -300,7 +320,7 @@
   </template>
   <script>
   
-  import combobox from '../components/combobox.vue';
+  //import combobox from '../components/combobox.vue';
   import ListarMed from '../components/ListarMed.vue';
   import BuscarMed from '../components/BuscarMed.vue';
   import BarraNavegacion from '@/components/BarraNavegacion.vue';
@@ -333,7 +353,7 @@
       'barra-navegacion': BarraNavegacion,
       ListarMed,
       BuscarMed,
-      combobox,
+      //combobox,
       'alerta-suceso': AlertaSuceso,
        DataTable
     },
@@ -379,6 +399,7 @@
         titulo_Modal:"",
         Id: null, 
         datos: null,
+        ComboListaTipoMedicamento:'',
         ListaFormularios: null,
         MostrarSpinner: false,
         NoHayRegistros: false,
@@ -409,9 +430,10 @@
       this.ValorCombo = "0";
       this.ValorComboTipo = "0";
       this.MostrarCombo();
-      this.MostrarComboTipo();
+      //this.MostrarComboTipo();
       this.idUsuario = this.$store.state.id_usuario;
       this.fetchArticulosMed();
+      this.ComboTipoMedicamento();
       
       
     },
@@ -465,14 +487,11 @@ alert("grabar");
         cerrarGrabar() {
             this.VentanaGrabar = false;
         },
-      async sendRowData(row) {
-        //Listaform
+    async sendRowData(row) {
       const keys = Object.keys(row);
       const entries = Object.entries(row);
       const primerpar = entries[0];  // Valor de la columna
       this.nroarticulo = primerpar[1];
-      alert(this.nroarticulo);
-      //this.ValorCombo = "1130";
       const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulosTodos?pTipo=${this.nroarticulo}`)
           .then((respuesta) => {
             let data = []; //declarar la variable data
@@ -484,18 +503,15 @@ alert("grabar");
               this.NroRegistro = item.nroregistro;
               this.NroRegistro = item.nroregistro;
               this.Precio = item.precio;
-              this.ValorCombo = item.idsector;
-              this.ValorComboTipo = item.idtipo;
+              this.ValorCombo = item.sector;
+              this.ValorComboTipo = item.tipomedicamentos;
               this.stockminimo = item.stockminimo;
-              this.stockmedio = item.sockmedio;
+              this.stockmedio = item.stockmedio;
               this.stockmaximo = item.stockmaximo;
               this.troquel = item.troquel;
               this.barra = item.codbarra;
               ;
-            });
-            //this.rows = respuesta.data.lista;
-            console.log("IMPORTANTE Muestro rows")
-            console.table(this.ListaFormulariosArticulos);     
+            });    
           })
           .catch(err => {
             //console.log(err);
@@ -503,6 +519,21 @@ alert("grabar");
      
       
     },
+    async ComboTipoMedicamento() {
+       const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=3&pId=0")
+          .then((respuesta) => {
+            this.ComboListaTipoMedicamento = respuesta.data.lista;
+            console.log("aca muestra los tipos");
+            console.log(this.ComboListaTipoMedicamento);
+            //si no hay formularios en la respuesta de la api mostrar mensaje
+            if (this.ListaFormularios.length == 0) {
+              this.NoHayRegistros = true
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      },
     async fetchArticulosMed() {
         //alert(this.idUsuario);
         //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
@@ -510,7 +541,6 @@ alert("grabar");
         //const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idConfig}`)
        const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idUsuario}`)
           .then((respuesta) => {
-            //this.ListaFormulariosArticulos = respuesta.data.lista
             this.rows = respuesta.data.lista;
             console.log("IMPORTANTE Muestro rows")
             console.table(this.rows);     
@@ -532,19 +562,13 @@ alert("grabar");
       },
       
       onSelect(e, dt, type, indexes ){
-        //var rowData = dt.rows( indexes ).data().toArray();
+       
         this.string_id = indexes;
         this.dialog = true;
         console.log("aca estoy")
             console.log(dt);
           },
-          //Mostrar(V1, V2){
-          //  this.Entrega = 0;
-       // this.dialog = true;
-         //   this.string_id = V1;
-         //   this.default_value =V2;
-            
-         // },
+          
          Limpiar(){
         this.nroarticulo = "0";
         this.codigo = "";
@@ -563,7 +587,7 @@ alert("grabar");
       },
       async MostrarCombo() {
       
-      const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=1&pId=2131")
+      const respuesta = await this.axios.get("/api/ConfigForm/ListaCombo?pTipo=4&pId=0")
         .then((respuesta) => {
           this.ListaCombos = respuesta.data.lista;
           //si no hay formularios en la respuesta de la api mostrar mensaje
@@ -616,20 +640,6 @@ alert("grabar");
         this.stock_Maximo = Listaform.stock_Maximo;
         this.stock_Medio = Listaform.stock_Medio;
         this.stock_Minimo = Listaform.stock_Minimo;
-        
-        //const codigoBuscado = Listaform.tipo_Articulo;
-        //let indiceEncontrado = null;
-        //for (let key in ListaCombos) {
-          //alert(key);
-        // Verificar si el campo codigo del objeto actual coincide con el codigoBuscado
-        //if (ListaCombos[key].codigo === codigoBuscado) {
-         // indiceEncontrado = key; // Asignar el índice encontrado
-          //alert("Encontro");
-          //break; // Salir del bucle una vez encontrado el índice
-          //}
-        //}
-       // alert(indiceEncontrado);
-        //this.ValorCombo = this.ListaCombos[0];
         this.ValorCombo = "San Martin";
         
         this.troquel = Listaform.troquel;
@@ -668,21 +678,14 @@ alert("grabar");
       },
      
       async Agregar() {
-        //Controlde campos antes de grabar
-        //if (this.length.length > 9 && /[0-9-]+/.test(this.length) ) {
-          //  alert("Hola");
-           // return;
-       // }
+        
         if(this.Entrega == 1)//Modifica
           this.Modificar();//alert("Modiifca Campo");
           else
           this.Grabar();//alert("Agrega Campo");
       },
       async Grabar() {
-        
-        //alert("Agrega Campo");
-          //await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
-          //Funciona Correcto
+  
           await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
           .then(datos => {
             this.mostrarAlertaEliminar = false;
@@ -720,7 +723,6 @@ alert("grabar");
         console.log(this.ListaFormulariosMed);
         console.log("FIN");
         if (this.ListaFormulariosMed.length == 0) {
-            //this.NoHayRegistros = true
             alert("No se encontraron datos para la busqueda")
           }
         })
@@ -729,17 +731,12 @@ alert("grabar");
         });
     },
       Mostrar(V1, V2, V3, V4, V_barra, V_troquel) {
-     //alert(V1);
      this.Nombre = V1 +" -  "+ V4;
      this.NroRegistro = V3;
      this.Precio = V2;
      this.barra = V_barra;
      this.troquel = V_troquel;
-        //const inputDetalleInternado = document.getElementsByName("NroRegistro")[0];
-        //inputDetalleInternado.value = V3;
-        //const pPrecio = document.getElementsByName("Precio")[0];
-        //pPrecio.value = V2;
-        
+     
         const pNombre = document.getElementsByName("Nombre")[0];
         pNombre.value = V1 +" -  "+ V4;
         
@@ -749,7 +746,7 @@ alert("grabar");
     
       async eliminarform(idConfigFormToDelete) {
         await this.axios.put(`/api/ConfigForm/EliminaCampos/14/${this.nroarticulo}`)
-        //await this.axios.put(`/api/ConfigForm/EliminaCampos/1/1`)
+       
           .then(datos => {
             this.mostrarAlertaEliminar = false;
             this.mensajeAlertaSuceso = "Eliminado exitosamente";

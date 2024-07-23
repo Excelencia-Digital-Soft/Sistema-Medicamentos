@@ -11,7 +11,7 @@ const storage = createStore({
   state: {
     isAuthenticated: false,
     usuario: '',
-    id_usuario: '',
+    //id_usuario: '',
     permisos: [],
     rol:''
   },

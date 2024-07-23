@@ -39,7 +39,7 @@
       <v-alert
           shaped
           
-        theme="dark"
+        theme="green"
         icon="mdi-arrow-up-bold-box-outline"
         density="compact"
         elevation="4"
@@ -135,6 +135,7 @@
     },
     data() {
       return {
+        id_usuario: '',
         usuario: '',
         clave: '',
         loading: false,

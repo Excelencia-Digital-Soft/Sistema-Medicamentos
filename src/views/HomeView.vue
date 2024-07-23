@@ -24,7 +24,44 @@ Menu nuevo
           
         ></v-img>
         <br><br>
-       
+        <div class="row" >
+            <div class="col  p-3  ">
+             <v-card
+                href="/Medicamentos" 
+                class="mx-auto"
+            
+                prepend-icon="mdi-play"
+                color ="#003366"
+              >
+                <template v-slot:title>
+                  Carga de Articulos
+                </template>
+
+                <v-card-text>
+                  Carga de Articulos asociados a AlfaBeta
+                </v-card-text>
+              </v-card>
+              
+              </div>
+              <div class="col  p-3  ">
+             <v-card
+                href="/Add" 
+                class="mx-auto"
+            
+                prepend-icon="mdi-play"
+                color ="#003366"
+              >
+                <template v-slot:title>
+                  Carga de Consumos
+                </template>
+
+                <v-card-text>
+                  Carga de Consumo de medicamentos
+                </v-card-text>
+              </v-card>
+              
+              </div>
+         </div>
         
           <div v-show="isVisible">
         <div class="row" >
