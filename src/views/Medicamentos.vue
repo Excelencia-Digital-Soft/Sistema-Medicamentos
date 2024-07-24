@@ -21,7 +21,7 @@
       <!-- ingreso de datos -->
 <div class="row bg-white" >
   <div class="col-1" >
-  <v-text-field v-model="nroarticulo" label="Identificador"  variant="underlined" size="small" ></v-text-field>
+  <v-text-field v-model="Identificador" label="Identificador"  variant="underlined" size="small" ></v-text-field>
 </div>
   <div class="col-1" >
   <v-text-field v-model="codigo" label="codigo" variant="underlined" size="small" ></v-text-field>
@@ -289,7 +289,7 @@
             <div>
                 <div class="row">
                     <div class="col  p-3 text-center ">    
-                <v-btn @click="VerGrabar()" prepend-icon="mdi-cloud-upload" color="#FFFFFF"  >Confirma Grabar</v-btn>
+                <v-btn @click="GrabarMedicamento()" prepend-icon="mdi-cloud-upload" color="#FFFFFF"  >Confirma Grabar</v-btn>
           </div>
           <div class="col  p-3 text-center ">
           <v-btn  prepend-icon="mdi-cancel" color="#FF0000" @click="cerrarGrabar">   <v-spacer></v-spacer> Cancelar</v-btn>
@@ -475,6 +475,54 @@
            
           },
     methods: {
+      async GrabarMedicamento() {
+ 
+ ///////-------------------------------
+ /////------obtener valores--------------
+ //////----------------------------------
+var valor_codigo = this.codigo;
+alert(valor_codigo);
+var valor_nombre = this.Nombre;
+alert(valor_nombre)
+var valor_nroregistro = this.NroRegistro;
+alert(valor_nroregistro);
+var valor_precio = this.Precio;
+alert(valor_precio);
+var valor_minimo = this.stockminimo;
+alert(valor_minimo);
+var valor_medio = this.stockmedio;
+alert(valor_medio);
+var valor_maximo = this.stockmaximo;
+alert(valor_maximo);
+var valor_tipo = this.ValorComboTipo;
+alert(valor_tipo);
+var valor_sector = this.ValorCombo;
+alert(valor_sector);
+
+
+ 
+ 
+
+ //alert(valor_minimo);
+ //////--------------------------------------
+ //http://localhost:5045/api/ConfigForm/AgregarArticulos/${valor_codigo}/${valor_nombre}/${valor_precio}/${valor_nroregistro}/1/1/20/21/22/${this.idUsuario}/0?idtipo=1&idsector=1&stockminimo=20&sockmedio=21&stockmaximo=22&pusuario=${this.idUsuario}&pinstitucionid=0
+ //////----------------------------------------
+     //await this.axios.post(`/api/ConfigForm/AgregarArticulos/${valor_codigo}/${valor_nombre}/${valor_precio}/${valor_nroregistro}/1/1/${this.valor_minimo}/${this.valor_medio}/${this.valor_maximo}/${this.idUsuario}/0?idtipo=1&idsector=1&stockminimo=${this.valor_minimo}&sockmedio=${this.valor_medio}&stockmaximo=${this.valor_maximo}&pusuario=${this.idUsuario}&pinstitucionid=0`)
+     await this.axios.post(`/api/ConfigForm/AgregarArticulos/${valor_codigo}/${valor_nombre}/${valor_precio}/${valor_nroregistro}/${valor_tipo}/${valor_sector}/${valor_minimo}/${valor_medio}/${valor_maximo}/42/0?idtipo=${valor_tipo}&idsector=${valor_sector}&stockminimo=${valor_minimo}&sockmedio=${valor_medio}&stockmaximo=${valor_maximo}&pusuario=42&pinstitucionid=0`)
+     
+     .then(datos => {
+       this.mostrarAlertaEliminar = false;
+       this.mensajeAlertaSuceso = "Grabaron Correctamente los datos";
+       this.mostrarAlertaSuceso = true;
+       
+       setTimeout(() => {
+                this.mostrarAlertaSuceso = false;
+             }, 5000);
+     });
+     window.location.reload();
+ },
+
+
       ver2024(){
 alert("grabar");
 

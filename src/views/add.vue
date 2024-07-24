@@ -1,5 +1,38 @@
 <template >
   <barra-navegacion></barra-navegacion>
+  <v-dialog
+          v-model="VentanaGrabar"
+          persistent
+          width="500"
+> 
+<v-alert
+        shaped
+      color="#FF0000"
+      theme="dark"
+      icon="mdi-alert"
+      density="compact"
+      elevation="4"
+      border="top"
+    >
+    Debe ingresar un dato
+<!-- Alerta de confirmación personalizada -->
+    <div v-if="mostrarAlertaGrabar"  role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+              <use xlink:href="#info-fill" />
+          </svg>
+          <div>
+              <div class="row">
+                 
+        <div class="col  p-3 text-center ">
+        <v-btn  prepend-icon="mdi-cancel" color="#FF0000" @click="cerrarGrabar">   <v-spacer></v-spacer> Cerrar</v-btn>
+      </div>
+      </div>
+          </div>
+      </div>
+      
+      <!--fin alerta confirmacion obtenerValores-->
+  </v-alert>
+  </v-dialog>
 <div  class="shadow p-3  bg-light text-sm " align-center style="max-width: 1350px; " >
 <v-alert
        shaped
@@ -26,7 +59,7 @@
        <div class="row " >
        
        <div class="col-2" >
-         <v-text-field @keyup.enter="handleEnter" v-model="Numero" label="Ingrese numero" variant="underlined" block></v-text-field>
+         <v-text-field @keyup.enter="handleEnter" ref="cantidadField" v-model="Numero" label="Ingrese numero" variant="underlined" block></v-text-field>
        </div>
        <div class="col-1 "> 
              <v-btn @click="VerDatosAfi()" color="primary" prepend-icon="mdi-magnify" block></v-btn>  
@@ -61,7 +94,7 @@
                 @click="AgregarMed()" 
                 class="mx-auto"
                 elevation="10"
-                prepend-icon="mdi-cloud-upload" 
+                prepend-icon="mdi-arrow-up-bold-box-outline" 
                 color ="primary"
               >
                 <template v-slot:title>
@@ -89,7 +122,8 @@
    </div>  
  </div> 
  <br>   
-
+ 
+ <AlertaMensaje  :visible = "mostrarAlertaSucesoMensaje" :mensaje = "mensajeAlertaSuceso" color="#FF0000"/>
 
      
  <div class="shadow p-3  bg-light text-sm " style="max-width: 1350px; ">
@@ -164,7 +198,7 @@
 </div>
 
 </div>
-
+<div class="content"> 
 <div class="row " >
        <div class="col-2" >
          <v-text-field v-model="MediCodigo" label="Codigo" variant="underlined" block></v-text-field>
@@ -176,22 +210,22 @@
          <v-text-field v-model="MediPrecio" label="MedPrecio" variant="underlined" block></v-text-field>
        </div>
        </div>
+       </div>
+       <div class="content"> 
 <div class="row" >
-           <div class="col-4 text-center ">
+           <div class="col-6 text-center ">
              
              <v-text-field  v-model="dosis" label="Dosis" variant="underlined" block></v-text-field>
            </div>
-           <div class="col-6 text-center ">
-             
-             <v-text-field  v-model="MedPresentacion" label="Detalle" variant="underlined" block></v-text-field>
-           </div>
+         
            <div class="col-1 text-center "> 
              <v-text-field  v-model="MedCantidad" label="Cantidad"  variant="underlined" block></v-text-field>
            </div>
-           <div class="col-1 text-center "> 
-             
+           <div class="col-4 text-center "> 
+            <AlertaMensaje  :visible = "mostrarAlertaSucesoMensaje" :mensaje = "mensajeAlertaSuceso" color="#FF0000"/>
            </div>
            
+         </div>
          </div>
 <!--Termina Buscador-->
 <v-card-actions>
@@ -240,6 +274,7 @@ import ejemplo from '../components/ejemplo.vue';
 import BarraNavegacion from '@/components/BarraNavegacion.vue';
 import Spinner from '@/components/Spinner.vue';
 import AlertaSuceso from '@/components/AlertaSuceso.vue';
+import AlertaMensaje from '@/components/AlertaMensaje.vue';
 import EditarFilaModal from '../components/EditarFilaModalN.vue';
 import DataTable from 'datatables.net-vue3'
 import Select from 'datatables.net-select';
@@ -270,6 +305,7 @@ components: {
  EditarFilaModalN,
  ejemplo,
  ListarMed,
+ AlertaMensaje,
  'alerta-suceso': AlertaSuceso,
   DataTable
 },
@@ -285,6 +321,8 @@ data: function () {
    VerDatosText: '',
    ValorCombo: '',
    ValorCombo1: '',
+   mensajeAlertaSuceso: "",//mensaje alerta de suceso vacio
+   VentanaGrabar: false,
    docentes: [], // <-- La lista de docentes
    ListObraSocial:[],
    codigo:'',
@@ -317,6 +355,7 @@ data: function () {
    NoHayRegistros: false,
    mostrarAlertaEliminar: false,
    mostrarAlertaSuceso: false,
+   mostrarAlertaSucesoMensaje: false,
    mensajeAlertaSuceso:"",
    idConfigFormToDelete: null,
    Fecha:"",
@@ -431,7 +470,20 @@ nextPage() {
    this.dialog = false;
    
  },
+ cerrarGrabar() {
+          this.VentanaGrabar = false;
+      },
  AgregarMed(){
+  if (!this.Numero || this.Numero.length == 0) {
+    this.$refs.cantidadField.$el.querySelector('input').focus();
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un numero internacion";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
      this.ListaFormularios = null;
      this.dialog = true;
      this.MediCodigo = "";
@@ -471,7 +523,16 @@ nextPage() {
  },
  async BuscarMedicamento() {
   
-   
+  if (!this.buscar || this.buscar.length == 0) {
+
+this.mostrarAlertaEliminar = false;
+this.mostrarAlertaSucesoMensaje = true;
+this.mensajeAlertaSuceso = "Debe Ingresar un nombre de medicamento";
+setTimeout(() => {
+this.mostrarAlertaSucesoMensaje = false;
+}, 5000);
+return;
+}
    this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
    const respuesta = await this.axios.get(`/api/ConfigForm/BuscarArticulos?pTipo=${this.idUsuario}&pNombre=${this.buscar}`, {
  timeout: 100000 // Tiempo de espera en milisegundos (10 segundos en este caso)
@@ -799,6 +860,36 @@ this.idConfigFormToDelete = this.string_id; // Guarda el idConfigForm en data
              this.MostrarSpinner = false;
      },
  async Grabar() {
+  if (!this.MediCodigo || this.MediCodigo.length == 0) {
+
+this.mostrarAlertaEliminar = false;
+this.mostrarAlertaSucesoMensaje = true;
+this.mensajeAlertaSuceso = "Debe Ingresar un medicamento";
+setTimeout(() => {
+this.mostrarAlertaSucesoMensaje = false;
+}, 5000);
+return;
+}
+if (!this.dosis || this.dosis.length == 0) {
+
+this.mostrarAlertaEliminar = false;
+this.mostrarAlertaSucesoMensaje = true;
+this.mensajeAlertaSuceso = "Debe Ingresar dosis";
+setTimeout(() => {
+this.mostrarAlertaSucesoMensaje = false;
+}, 5000);
+return;
+}
+if (!this.MedCantidad || this.MedCantidad.length == 0) {
+
+this.mostrarAlertaEliminar = false;
+this.mostrarAlertaSucesoMensaje = true;
+this.mensajeAlertaSuceso = "Debe Ingresar una cantidad";
+setTimeout(() => {
+this.mostrarAlertaSucesoMensaje = false;
+}, 5000);
+return;
+}
    //alert("Agrega Campo"); 
      //await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
      //Funciona Correcto

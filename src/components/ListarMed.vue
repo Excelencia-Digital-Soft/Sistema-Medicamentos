@@ -1,4 +1,37 @@
 <template>
+  <v-dialog
+          v-model="VentanaGrabar"
+          persistent
+          width="500"
+> 
+<v-alert
+        shaped
+      color="#FF0000"
+      theme="dark"
+      icon="mdi-alert"
+      density="compact"
+      elevation="4"
+      border="top"
+    >
+    La medicacion se anulo correctamente
+<!-- Alerta de confirmación personalizada -->
+    <div v-if="mostrarAlertaGrabar"  role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+              <use xlink:href="#info-fill" />
+          </svg>
+          <div>
+              <div class="row">
+                 
+        <div class="col  p-3 text-center ">
+        <v-btn  prepend-icon="mdi-cancel" color="#FF0000" @click="cerrarGrabar">   <v-spacer></v-spacer> Cerrar</v-btn>
+      </div>
+      </div>
+          </div>
+      </div>
+      
+      <!--fin alerta confirmacion obtenerValores-->
+  </v-alert>
+  </v-dialog>
   <div>
   
       <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
@@ -57,6 +90,7 @@ export default {
       nombre: '',
       ListaFormulariosArticulos:'',
       rows: [],
+      VentanaGrabar: false,
       id : "0",
       searchQuery: '',
       currentPage: 1,
@@ -109,15 +143,20 @@ export default {
        this.mensajeAlertaSuceso = "Eliminado exitosamente";
        this.mostrarAlertaSuceso = true;
      
-alert("Eliminado");
-       setTimeout(() => {
-                this.mostrarAlertaSuceso = false;
-             }, 5000);
+       this.VentanaGrabar = true;
+          this.mostrarAlertaGrabar = true;
+       //setTimeout(() => {
+        //        this.mostrarAlertaSuceso = false;
+          //   }, 5000);
+             
      });
   
     
   },
-
+  cerrarGrabar() {
+          this.VentanaGrabar = false;
+          window.location.reload();
+      },
   async fetchArticulosMed() {
       
       //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
