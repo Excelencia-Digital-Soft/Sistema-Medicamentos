@@ -1,11 +1,15 @@
 <template>
-    <barra-navegacion></barra-navegacion>
+      <barra-navegacion></barra-navegacion>
+      <v-text-field v-model="adrian" label="Princnipal" variant="underlined" block></v-text-field>
+
+    <economato_ingreso />
     <EditarFilaModalN />
      <!-- Componente que busca medicmanentos de AlfABeta  -->    
      <BuscarMed />
     
     </template>
     <script>
+    import economato_ingreso from '../components/economato_ingreso.vue';
     import EditarFilaModalN from '../components/EditarFilaModalN.vue';
     import BarraNavegacion from '@/components/BarraNavegacion.vue';
     import BuscarMed from '../components/BuscarMed.vue';
@@ -24,13 +28,19 @@
         BuscarMed,
         ListarMed,
         grilla,
+        economato_ingreso,
         EditarFilaModalN,
         AlertaSuceso,
         'spinner': Spinner,
     
     },
-    data() {
-    },
+    data: function () {
+ return {
+ 
+   adrian: "",
+ 
+ }
+},
     computed: {
     },
     mounted() {

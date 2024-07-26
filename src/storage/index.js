@@ -38,7 +38,7 @@ const storage = createStore({
       state.isAuthenticated = false;
       localStorage.removeItem('token');
       state.usuario = '';
-      id_usuario = '';
+      //id_usuario = '';
       state.permisos = [];
       router.push('/');
     },

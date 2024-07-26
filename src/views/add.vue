@@ -1,5 +1,6 @@
 <template >
   <barra-navegacion></barra-navegacion>
+  
   <v-dialog
           v-model="VentanaGrabar"
           persistent
@@ -36,7 +37,8 @@
 <div  class="shadow p-3  bg-light text-sm " align-center style="max-width: 1350px; " >
 <v-alert
        shaped
-     color="#F5F5F5"
+      color="blue-grey"
+     
      theme="dark"
      icon="mdi-domain"
      density="compact"
@@ -147,25 +149,44 @@
  fullscreen
 >
 <v-card>
-
+  <div class="content" > 
+  <v-text-field v-model="searchQuery" label="Buscador" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
+ </div>
 <!--Empieza Buscador-->
 
+<div class="containerScroll">
+<div class="content" ref="scrollContainer"> 
+    
+<table class="table table-striped bg-white text-left">
+        <thead>
+          <tr>
+            <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in paginatedRows" :key="rowIndex">
+            <td v-for="(header, colIndex) in headers" :key="colIndex">
+              <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
+              {{ row[header] }}
+            </v-chip>
+            </td>
+            <td>
+            <v-btn @click="sendRowData(row)" class="bg-primary" >+</v-btn>
+          </td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+
+</div>
+</div>
+
   
-<div class="content">  
-    <div class="row shadow p-3" >
-           <div class="col-9 text-center ">
-             <!--<input type="text" v-model="buscar" class="form-control" placeholder="Busqueda por nombre de medicamento"/>  --> 
-             <v-text-field  v-model="buscar" label="Busqueda por nombre de medicamento" variant="underlined" block></v-text-field>
-           </div>
-           <div class="col-3 text-center "> 
-             <v-btn @click="BuscarMedicamento()" color="primary" prepend-icon="mdi-magnify" block>Buscar</v-btn>  
-           </div>
-           
-         </div>
-</div>             
+            
              <!--FIN-->                  
 
-
+<!--
              <div class="containerScroll">
  <div class="content" ref="scrollContainer">
 <div class="row mt-5">
@@ -198,6 +219,7 @@
 </div>
 
 </div>
+-->
 <div class="content"> 
 <div class="row " >
        <div class="col-2" >
@@ -366,7 +388,7 @@ data: function () {
  }
 },
 created() {
- 
+
  //this.fetch();
  this.SelectedObraSocial();
  this.MostrarCombo();
@@ -374,6 +396,8 @@ created() {
  //alert("hola");
  this.ValorCombo = "0";
  this.idUsuario = this.$store.state.id_usuario;
+ this.BuscarMedicamento();
+ this.fetchArticulosMed();
  
  
 },
@@ -381,27 +405,29 @@ computed: {
         
 //--------------------------
 //--------------------------
-filteredItems() {
-   if (!this.searchQuery) {
-     return this.items;
-   }
-   const query = this.searchQuery.toLowerCase();
-   return this.items.filter(item => {
-     return (
-       item.dato1.toLowerCase().includes(query) ||
-       item.dato2.toLowerCase().includes(query) ||
-       item.dato3.toLowerCase().includes(query)
-     );
-   });
- },
- paginatedItems() {
-   const start = (this.currentPage - 1) * this.itemsPerPage;
-   const end = start + this.itemsPerPage;
-   return this.filteredItems.slice(start, end);
- },
- totalPages() {
-   return Math.ceil(this.filteredItems.length / this.itemsPerPage);
- },
+headers() {
+        return this.rows.length > 0 ? Object.keys(this.rows[0]) : [];
+      },
+filteredRows() {
+        if (!this.searchQuery) {
+          return this.rows;
+        }
+        const query = this.searchQuery.toLowerCase();
+        return this.rows.filter(row => 
+          Object.values(row).some(value => 
+            String(value).toLowerCase().includes(query)
+          )
+        );
+      },
+     
+      paginatedRows() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.filteredRows.slice(start, end);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredRows.length / this.itemsPerPage);
+      },
 
 //--------------------------
 //--------------------------
@@ -447,6 +473,21 @@ nextPage() {
    console.log("aca estoy")
        console.log(dt);
      },
+     sendRowData(row) {
+      const keys = Object.keys(row);
+      //alert(keys[0]); Nombre de la columna
+      const entries = Object.entries(row);
+      const primerpar = entries[1];  // Valor de la columna
+      const nombre = entries[2];  // Valor de la columna
+      const precio = entries[3];  // Valor de la columna
+      //alert('Dato de la fila seleccionada:', row);
+      console.log('Dato de la fila seleccionada:', primerpar[1]);
+      //this.processRow(row);
+      this.MediCodigo = primerpar[1];
+      this.MediNOmbre =nombre[1];
+      this.MediPrecio = precio[1];
+      
+    },
      Mostrar(V1, V2, V3){
      
        this.MediCodigo = V1;
@@ -459,6 +500,22 @@ nextPage() {
    this.default_value ="";
    this.value_list ="";
  },
+ async fetchArticulosMed() {
+        
+        //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud 
+        //const respuesta = await this.axios.get("/api/ConfigForm/ListaField?pTipo=2136")
+        const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idUsuario}`)
+          .then((respuesta) => {
+            //this.ListaFormulariosArticulos = respuesta.data.lista
+            this.rows = respuesta.data.lista;
+            console.log("IMPORTANTE Muestro rows ADRIAN")
+            console.table(this.rows);     
+          })
+          .catch(err => {
+            //console.log(err);
+          });
+      // this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
+      },
  nuevo(){
    this.Entrega = 0;
    this.dialog = true;
@@ -484,7 +541,7 @@ nextPage() {
         }, 5000);
         return;
    }
-     this.ListaFormularios = null;
+     //this.ListaFormularios = null;
      this.dialog = true;
      this.MediCodigo = "";
      this.MediNOmbre = "";
@@ -523,27 +580,31 @@ nextPage() {
  },
  async BuscarMedicamento() {
   
-  if (!this.buscar || this.buscar.length == 0) {
+  //if (!this.buscar || this.buscar.length == 0) {
 
-this.mostrarAlertaEliminar = false;
-this.mostrarAlertaSucesoMensaje = true;
-this.mensajeAlertaSuceso = "Debe Ingresar un nombre de medicamento";
-setTimeout(() => {
-this.mostrarAlertaSucesoMensaje = false;
-}, 5000);
-return;
-}
-   this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
-   const respuesta = await this.axios.get(`/api/ConfigForm/BuscarArticulos?pTipo=${this.idUsuario}&pNombre=${this.buscar}`, {
- timeout: 100000 // Tiempo de espera en milisegundos (10 segundos en este caso)
+//this.mostrarAlertaEliminar = false;
+//this.mostrarAlertaSucesoMensaje = true;
+//this.mensajeAlertaSuceso = "Debe Ingresar un nombre de medicamento";
+//setTimeout(() => {
+//this.mostrarAlertaSucesoMensaje = false;
+//}, 5000);
+//return;
+//}
+//alert("medciamento");
+   //this.MostrarSpinner = true; //abrir spinner mientras realiza la solicitud
+   const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulos?pTipo=${this.idUsuario}`)
+   //const respuesta = await this.axios.get(`/api/ConfigForm/BuscarArticulos?pTipo=${this.idUsuario}&pNombre=${this.buscar}`, {
+ //timeout: 100000 // Tiempo de espera en milisegundos (10 segundos en este caso)
 
 
  
-})
+//})
      .then((respuesta) => {
        this.ListaFormularios = respuesta.data.lista
-       //console.log("Importante Lista ListaFormularios");
-       //console.table(this.ListaFormularios);
+       this.rows = respuesta.data.lista;
+       
+       console.log("Importante Lista Medicamentos");
+       console.table(this.ListaFormularios);
        this.datos = this.ListaFormularios;
        //console.log("Importante Lista Datos");
        //console.table(this.datos);
@@ -559,7 +620,7 @@ return;
      });
      
          
-   this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
+   //this.MostrarSpinner = false;//cerrar spinner cuando termine de realizar la solicitud
  },
  async MostrarCombo() {
    
@@ -861,7 +922,7 @@ this.idConfigFormToDelete = this.string_id; // Guarda el idConfigForm en data
      },
  async Grabar() {
   if (!this.MediCodigo || this.MediCodigo.length == 0) {
-
+    
 this.mostrarAlertaEliminar = false;
 this.mostrarAlertaSucesoMensaje = true;
 this.mensajeAlertaSuceso = "Debe Ingresar un medicamento";
@@ -890,15 +951,7 @@ this.mostrarAlertaSucesoMensaje = false;
 }, 5000);
 return;
 }
-   //alert("Agrega Campo"); 
-     //await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
-     //Funciona Correcto
-     //http://localhost:5045/api/ConfigForm/AgregarConsumo/852/10086/852/123/este%20resgistro%20es%20de%20prueba/24%2F07%2F2024/%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A/24/1/42
-     //await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
-     //alert(this.Numero);
-     //alert(this.MediCodigo);
-     //alert(this.NComprobante);
-     //alert(this.dosis);
+  
      
      await this.axios.post(`/api/ConfigForm/AgregarConsumo/${this.Numero}/${this.MediCodigo}/${this.NComprobante}/123/${this.dosis}/24%2F07%2F2024/${this.VerDatosText}/${this.MedCantidad}/${this.ValorCombo}/42`)
      .then(datos => {

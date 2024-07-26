@@ -33,11 +33,21 @@
   </v-alert>
   </v-dialog>
   <div>
-  
-      <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
-  Listado de consumo  
+    <v-alert
+       shaped
+      color="blue-grey"
+     
+     theme="dark"
+     icon="mdi-arrow-right"
+     density="compact"
+     elevation="4"
+     border="top"
+   >
+    <b>   Listado de consumo  </b> 
 
-</v-chip>
+    
+   </v-alert>
+
 <div class="row bg-white" >
             <div class="col  p-3 text-center ">
              
@@ -50,10 +60,14 @@
               </div>
         </div>
     
-    <table class="table table-bordered table-hover bg-white">
+    <table class="table table-striped bg-white text-left">
       <thead>
         <tr>
-          <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+          <th v-for="(header, index) in headers" :key="index">
+            <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
+            {{ header }}
+          </v-chip>
+          </th>
         </tr>
       </thead>
       <tbody>

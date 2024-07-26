@@ -2,11 +2,13 @@
   <barra-navegacion></barra-navegacion>
 
   <v-card  class="px-4 py-2  text-center w-100 bg-light" elevation="3"  style="max-width: 1350px; ">
-    
+   
 <div  class="shadow p-3  bg-light text-sm text-left" align-center style="max-width: 1350px; " >
+  
+ 
   <v-alert
           shaped
-        color="#F5F5F5"
+        color="blue-grey"
         theme="dark"
         icon="mdi-domain"
         density="compact"
@@ -24,11 +26,11 @@
   <v-text-field v-model="Identificador" label="Identificador"  variant="underlined" size="small" ></v-text-field>
 </div>
   <div class="col-1" >
-  <v-text-field v-model="codigo" label="codigo" variant="underlined" size="small" ></v-text-field>
+  <v-text-field v-model="codigo" ref="codigoField" label="codigo" variant="underlined" size="small" ></v-text-field>
 </div>
 
 <div class="col-5" >
-  <v-text-field  name="Nombre" v-model="Nombre" label="Nombre" variant="underlined" size="small" ></v-text-field>
+  <v-text-field  name="Nombre" ref="nombreField" v-model="Nombre" label="Nombre" variant="underlined" size="small" ></v-text-field>
 </div>
 
 <div class="col-1" >
@@ -60,30 +62,40 @@
        
 </div>
 <div class="col-2" >
-  <v-text-field v-model="stockminimo" label="stockminimo" variant="underlined" size="small" ></v-text-field>
+  <v-text-field v-model="stockminimo" label="stockminimo" ref="stockminimoField" variant="underlined" size="small" ></v-text-field>
 </div>
 <div class="col-2" >
-  <v-text-field v-model="stockmedio" label="stockmedio" variant="underlined" size="small" ></v-text-field>
+  <v-text-field v-model="stockmedio" label="stockmedio" ref="stockmedioField" variant="underlined" size="small" ></v-text-field>
 </div>
 <div class="col-2" >
-  <v-text-field v-model="stockmaximo" label="stockmaximo" variant="underlined" size="small" ></v-text-field>
+  <v-text-field v-model="stockmaximo" label="stockmaximo" ref="stockmaximoField" variant="underlined" size="small" ></v-text-field>
 </div>
 
 </div>
 <!-- COMPONENTE Busca en AlfaBeta --> 
 
+<v-alert
+          shaped
+        color="blue-grey"
+        theme="dark"
+        icon="mdi-arrow-right"
+        density="compact"
+        elevation="4"
+        border="top"
+      >
+       <b> Buscador de Medicamentos en AlfaBeta </b> 
+  
+     
+      </v-alert>
 
 
 
- <v-chip class="d-flex  darken-1 sm"  color="#000000" elevation="1"   >
- <b> Buscador de Medicamentos en AlfaBeta</b>
-</v-chip>
 
 <div class="content" >  
        <div class="row shadow p-3 bg-white" >
               <div class="col-9 text-center " >
                 
-                <v-text-field  v-model="buscar" label="Busqueda por nombre de medicamento de AlfaBeta" variant="underlined" block></v-text-field>
+                <v-text-field @keyup.enter="handleEnter" v-model="buscar" label="Busqueda por nombre de medicamento de AlfaBeta" variant="underlined" block></v-text-field>
               </div>
               <div class="col-3 text-left "> 
                <!--
@@ -132,7 +144,7 @@
 </div>
 
 </div>
-
+<AlertaMensaje  :visible = "mostrarAlertaSucesoMensaje" :mensaje = "mensajeAlertaSuceso" color="#FF0000"/>
 <div class="row shadow p-3 bg-white" >
 <div class="row bg-white" >
 <div class="col-2" ></diV>
@@ -151,10 +163,20 @@
 <!-- COMPONENTE Listado de Medicamentos 
 <ListarMed />
 --> 
-<v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
-   <b>Listado de Articulos  </b> 
+<v-alert
+          shaped
+        color="blue-grey"
+        theme="dark"
+        icon="mdi-arrow-right"
+        density="compact"
+        elevation="4"
+        border="top"
+      >
+       <b> Listado de Articulos </b> 
+  
+     
+      </v-alert>
 
-</v-chip>
 <div class="row bg-white" >
               <div class="col  p-3 text-center ">
                
@@ -167,10 +189,14 @@
                 </div>
           </div>
       
-      <table class="table table-bordered table-hover bg-white text-left">
+      <table class="table table-striped bg-white text-left">
         <thead>
           <tr>
-            <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+            <th v-for="(header, index) in headers" :key="index" >
+              <v-chip class="d-flex  darken-1 sm"   elevation="1"   > 
+              {{ header }}
+            </v-chip>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -331,6 +357,7 @@
   import DataTablesCore from 'datatables.net-bs5';
   import Buttons from 'datatables.net-buttons-bs5';
   import 'datatables.net-responsive-bs5';
+  import AlertaMensaje from '@/components/AlertaMensaje.vue';
 
  
   
@@ -354,6 +381,7 @@
       ListarMed,
       BuscarMed,
       //combobox,
+      AlertaMensaje,
       'alerta-suceso': AlertaSuceso,
        DataTable
     },
@@ -475,29 +503,92 @@
            
           },
     methods: {
+      handleEnter() {
+   // Este método se activará cuando se presione la tecla "Enter"
+   if (this.buscar) {
+    this.BuscarMedicamento();
+ } else {
+     alert('Por favor ingresa un nombre antes de presionar "Enter"');
+   }
+   // Aquí puedes agregar la lógica que deseas ejecutar cuando se presione "Enter"
+ },
       async GrabarMedicamento() {
- 
+        if (!this.codigo || this.codigo.length == 0) {
+        this.$refs.codigoField.$el.querySelector('input').focus();
+        this.VentanaGrabar = false;
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un codigo de medicamento";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
+   if (!this.stockmaximo || this.stockmaximo.length == 0) {
+        this.$refs.stockmaximoField.$el.querySelector('input').focus();
+        this.VentanaGrabar = false;
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un stock maximo";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
+   if (!this.stockmedio || this.stockmedio.length == 0) {
+        this.$refs.stockmedioField.$el.querySelector('input').focus();
+        this.VentanaGrabar = false;
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un stock medio";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
+   if (!this.stockminimo || this.stockminimo.length == 0) {
+        this.$refs.stockminimoField.$el.querySelector('input').focus();
+        this.VentanaGrabar = false;
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un stock minimo";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
+   if (!this.Nombre || this.Nombre.length == 0) {
+        this.$refs.nombreField.$el.querySelector('input').focus();
+        this.VentanaGrabar = false;
+        this.mostrarAlertaEliminar = false;
+        this.mostrarAlertaSucesoMensaje = true;
+        this.mensajeAlertaSuceso = "Debe Ingresar un nombre de medicamento";
+        setTimeout(() => {
+        this.mostrarAlertaSucesoMensaje = false;
+        }, 5000);
+        return;
+   }
  ///////-------------------------------
  /////------obtener valores--------------
  //////----------------------------------
 var valor_codigo = this.codigo;
-alert(valor_codigo);
+//alert(valor_codigo);
 var valor_nombre = this.Nombre;
-alert(valor_nombre)
+//alert(valor_nombre)
 var valor_nroregistro = this.NroRegistro;
-alert(valor_nroregistro);
+//alert(valor_nroregistro);
 var valor_precio = this.Precio;
-alert(valor_precio);
+//alert(valor_precio);
 var valor_minimo = this.stockminimo;
-alert(valor_minimo);
+//alert(valor_minimo);
 var valor_medio = this.stockmedio;
-alert(valor_medio);
+//alert(valor_medio);
 var valor_maximo = this.stockmaximo;
-alert(valor_maximo);
+//alert(valor_maximo);
 var valor_tipo = this.ValorComboTipo;
-alert(valor_tipo);
+//alert(valor_tipo);
 var valor_sector = this.ValorCombo;
-alert(valor_sector);
+//alert(valor_sector);
 
 
  
@@ -539,8 +630,8 @@ alert("grabar");
       const keys = Object.keys(row);
       const entries = Object.entries(row);
       const primerpar = entries[0];  // Valor de la columna
-      this.nroarticulo = primerpar[1];
-      const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulosTodos?pTipo=${this.nroarticulo}`)
+      this.Identificador = primerpar[1];
+      const respuesta = await this.axios.get(`/api/ConfigForm/ListarArticulosTodos?pTipo=${this.Identificador}`)
           .then((respuesta) => {
             let data = []; //declarar la variable data
             this.ListaFormulariosArticulos = respuesta.data.lista;
@@ -733,7 +824,7 @@ alert("grabar");
           this.Grabar();//alert("Agrega Campo");
       },
       async Grabar() {
-  
+       
           await this.axios.post(`/api/ConfigForm/AgregarCampos/1/0/${this.default_value}/${this.value_list}/${this.mask_library}/${this.assumed_value}/${this.length}`)
           .then(datos => {
             this.mostrarAlertaEliminar = false;
@@ -793,7 +884,7 @@ alert("grabar");
     },
     
       async eliminarform(idConfigFormToDelete) {
-        await this.axios.put(`/api/ConfigForm/EliminaCampos/14/${this.nroarticulo}`)
+        await this.axios.put(`/api/ConfigForm/EliminaCampos/14/${this.Identificador}`)
        
           .then(datos => {
             this.mostrarAlertaEliminar = false;

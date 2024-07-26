@@ -1,6 +1,31 @@
 <template>
+  <div class="content"> 
     <div>
-      <h5>Tabla Dinámica con Búsqueda y Paginación</h5>
+      <div class="row " >
+       <div class="col-2" >
+        <v-text-field v-model="MediCodigo" label="Tipo de Medcicamento" variant="underlined" block></v-text-field>
+        </div>
+        <div class="col-2" >
+          <v-text-field v-model="MediNOmbre" label="Fecha" variant="underlined" block></v-text-field>
+        </div>
+        <div class="col-2" >
+          <v-text-field v-model="MediPrecio" label="Nro de Remito" variant="underlined" block></v-text-field>
+        </div>
+       </div>
+      <div class="row " >
+       <div class="col-2" >
+        <v-text-field v-model="MediCodigo" label="Codigo" variant="underlined" block></v-text-field>
+        </div>
+        <div class="col-8" >
+          <v-text-field v-model="MediNOmbre" label="Nombre" variant="underlined" block></v-text-field>
+        </div>
+        <div class="col-2" >
+          <v-text-field v-model="MediPrecio" label="Precio" variant="underlined" block></v-text-field>
+        </div>
+       </div>
+      
+     
+     
       
       <v-text-field v-model="searchQuery" label="Buscador" append-inner-icon="mdi-magnify" variant="underlined" size="small" ></v-text-field>
       <table class="table table-bordered table-hover">
@@ -27,23 +52,19 @@
       </div>
       
     </div>
+
+    </div>
   </template>
   
   <script>
   export default {
     data() {
       return {
+        MediCodigo: '',
+        MediNOmbre: '',
+   MediPrecio: '',
         ListaFormulariosArticulos:'',
         rows: [],
-        //rows: [
-         // { Nombre: 'Adrian', Edad: 50, Email: 'adrian@example.com' },
-         // { Nombre: 'Hugo', Edad: 60, Email: 'hugo@example.com' },
-         // { Nombre: 'Luis', Edad: 40, Email: 'luis@example.com' },
-         // { Nombre: 'Maria', Edad: 35, Email: 'maria@example.com' },
-         // { Nombre: 'Ana', Edad: 28, Email: 'ana@example.com' },
-         // { Nombre: 'Jorge', Edad: 45, Email: 'jorge@example.com' },
-         // { Nombre: 'Pablo', Edad: 32, Email: 'pablo@example.com' }
-        //],
         searchQuery: '',
         currentPage: 1,
         itemsPerPage: 3
@@ -85,8 +106,15 @@
       //alert(keys[0]); Nombre de la columna
       const entries = Object.entries(row);
       const primerpar = entries[0];  // Valor de la columna
+      const nombre = entries[2];  // Valor de la columna
+      const precio = entries[3];  // Valor de la columna
       //alert('Dato de la fila seleccionada:', row);
       console.log('Dato de la fila seleccionada:', primerpar[1]);
+      this.MediCodigo = primerpar[1];
+      this.MediNOmbre =nombre[1];
+      this.MediPrecio = precio[1];
+      this.adrian = "aca";
+      
       //this.processRow(row);
       
     },
